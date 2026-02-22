@@ -1,0 +1,15 @@
+# Staging area for new training data (processed files get moved to skill references)
+NewTrainingData/
+
+# Local Claude Code config
+.claude/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp files
+*.tmp
+*.bak
+~$*
