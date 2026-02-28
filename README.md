@@ -136,7 +136,7 @@ See [`SKILLS_VERSION_MANIFEST.md`](SKILLS_VERSION_MANIFEST.md) for the complete 
 
 | Resource | Link | Description |
 |----------|------|-------------|
-| **Free Trial** | [fuuz.app](https://fuuz.app) | Request your free trial of FUUZ |
+| **Free Trial** | [fuuz.app]([https://fuuz.app](https://forms.zohopublic.com/mfgxonlinesaas/form/TrialNotificationForm/formperma/syUyoccvUH7Ef5DaReDpfM48vuKiZtaGfYN18JPPu9k)) | Request your free trial of FUUZ |
 | **Get Started** | [getstarted.fuuz.com](https://getstarted.fuuz.com) | Introductory videos and walkthroughs to get up and running |
 | **FUUZ Academy** | [academy.fuuz.com](https://academy.fuuz.com) | Online LMS with structured courses and certifications |
 | **Support & Community** | [support.fuuz.com](https://support.fuuz.com) | Knowledge base, documentation, and community |
