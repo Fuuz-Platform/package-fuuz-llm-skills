@@ -1,0 +1,293 @@
+{
+  "packageDefinition": {
+    "name": "Example-MCPTools"
+  },
+  "packageDefinitionVersion": {
+    "id": "cmlftd3nu0074356p7eu0rdiq",
+    "version": "0.0.1",
+    "packageDefinitionId": "exampleMcpTools",
+    "exportedFileId": null
+  },
+  "packageDefinitionSelections": [
+    {
+      "id": "cmlftd5mv0075356pte5xdd51",
+      "api": "application",
+      "modelName": "DataFlow",
+      "selected": [
+        {
+          "id": "connectorDetails",
+          "label": "Connector Details"
+        },
+        {
+          "id": "connectorToGraph",
+          "label": "Connector To Graph"
+        },
+        {
+          "id": "DataFlow Details 1.0.0",
+          "label": "DataFlow Details"
+        },
+        {
+          "id": "DataFlow To Graph 1.0.0",
+          "label": "DataFlow To Graph"
+        },
+        {
+          "id": "DataModel Details 1.0.0",
+          "label": "DataModel Details"
+        },
+        {
+          "id": "DataModel To Graph 1.0.0",
+          "label": "DataModel To Graph"
+        },
+        {
+          "id": "deviceDetails",
+          "label": "Device Details"
+        },
+        {
+          "id": "deviceToGraph",
+          "label": "Device To Graph"
+        },
+        {
+          "id": "Dynamic Mutate 1.0.0",
+          "label": "Dynamic Mutate"
+        },
+        {
+          "id": "Dynamic Query 1.0.0",
+          "label": "Dynamic Query"
+        },
+        {
+          "id": "Screen Details 1.0.0",
+          "label": "Screen Details"
+        },
+        {
+          "id": "Screen To Graph 1.0.0",
+          "label": "Screen To Graph"
+        }
+      ],
+      "fields": [
+        {
+          "name": "id"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "active"
+        },
+        {
+          "name": "substitutesDataFlowId"
+        },
+        {
+          "name": "dataFlowTypeId"
+        },
+        {
+          "name": "logLevelId"
+        },
+        {
+          "name": "mcpToolConfiguration.enabled"
+        },
+        {
+          "name": "mcpToolConfiguration.inputSchema"
+        },
+        {
+          "name": "mcpToolConfiguration.outputSchema"
+        },
+        {
+          "name": "mcpToolConfiguration.readOnly"
+        },
+        {
+          "name": "mcpToolConfiguration.destructive"
+        },
+        {
+          "name": "mcpToolConfiguration.idempotent"
+        },
+        {
+          "name": "moduleId"
+        },
+        {
+          "name": "_customFields._externalId"
+        }
+      ],
+      "metadata": {
+        "dataTransform": "$",
+        "viewFields": [
+          {
+            "id": "id",
+            "label": "id"
+          },
+          {
+            "id": "name",
+            "label": "name"
+          },
+          {
+            "id": "description",
+            "label": "description"
+          },
+          {
+            "id": "active",
+            "label": "active"
+          },
+          {
+            "id": "substitutesDataFlowId",
+            "label": "substitutesDataFlowId"
+          },
+          {
+            "id": "dataFlowTypeId",
+            "label": "dataFlowTypeId"
+          },
+          {
+            "id": "logLevelId",
+            "label": "logLevelId"
+          },
+          {
+            "id": "mcpToolConfiguration.enabled",
+            "label": "mcpToolConfiguration.enabled"
+          },
+          {
+            "id": "mcpToolConfiguration.readOnly",
+            "label": "mcpToolConfiguration.readOnly"
+          },
+          {
+            "id": "mcpToolConfiguration.destructive",
+            "label": "mcpToolConfiguration.destructive"
+          },
+          {
+            "id": "mcpToolConfiguration.idempotent",
+            "label": "mcpToolConfiguration.idempotent"
+          },
+          {
+            "id": "moduleId",
+            "label": "moduleId"
+          },
+          {
+            "id": "_customFields._externalId",
+            "label": "_customFields._externalId"
+          }
+        ],
+        "labelField": "name"
+      },
+      "packageDefinitionVersionId": "cmlftd3nu0074356p7eu0rdiq"
+    },
+    {
+      "id": "cmlftd5mv0076356pcipr01hb",
+      "api": "application",
+      "modelName": "Module",
+      "selected": [
+        {
+          "id": "abelareMcpTools",
+          "label": "Abelare MCP Tools"
+        }
+      ],
+      "fields": [
+        {
+          "name": "id"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "moduleGroupId"
+        },
+        {
+          "name": "_customFields._externalId"
+        }
+      ],
+      "metadata": {
+        "labelField": "name",
+        "viewFields": [
+          {
+            "id": "id",
+            "label": "id"
+          },
+          {
+            "id": "name",
+            "label": "name"
+          },
+          {
+            "id": "description",
+            "label": "description"
+          },
+          {
+            "id": "moduleGroupId",
+            "label": "moduleGroupId"
+          },
+          {
+            "id": "_customFields._externalId",
+            "label": "_customFields._externalId"
+          }
+        ],
+        "insertBefore": [
+          {
+            "modelName": "DataFlow"
+          }
+        ]
+      },
+      "packageDefinitionVersionId": "cmlftd3nu0074356p7eu0rdiq"
+    },
+    {
+      "id": "cmlftd5mv0077356pys44zfyd",
+      "api": "application",
+      "modelName": "ModuleGroup",
+      "selected": [
+        {
+          "id": "applications",
+          "label": "Applications"
+        }
+      ],
+      "fields": [
+        {
+          "name": "id"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "icon"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "_customFields._externalId"
+        }
+      ],
+      "metadata": {
+        "dataTransform": "$",
+        "viewFields": [
+          {
+            "id": "id",
+            "label": "id"
+          },
+          {
+            "id": "name",
+            "label": "name"
+          },
+          {
+            "id": "icon",
+            "label": "icon"
+          },
+          {
+            "id": "description",
+            "label": "description"
+          },
+          {
+            "id": "_customFields._externalId",
+            "label": "_customFields._externalId"
+          }
+        ],
+        "labelField": "name",
+        "insertBefore": [
+          {
+            "modelName": "Module"
+          }
+        ]
+      },
+      "packageDefinitionVersionId": "cmlftd3nu0074356p7eu0rdiq"
+    }
+  ]
+}

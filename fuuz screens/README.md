@@ -49,14 +49,15 @@ fuuz-screens-v1/
     │                                                 responsive patterns
     ├── common-errors.md                (87 lines)   Quick-reference troubleshooting for
     │                                                 render errors and data binding issues
-    ├── visualization-library.md     (2,246 lines)   Complete FusionCharts reference
-    │                                                 (80+ chart types with properties
-    │                                                 and data structures)
-    └── system-seeded-values.md      (2,156 lines)   System-seeded lookup values (modes,
-                                                      statuses, event types, connectors)
+    ├── stimulsoft-reports.md         (877 lines)    Stimulsoft report architecture
+    └── oee-dashboard-domain.md      (520 lines)    OEE/TEEP formulas and patterns
 ```
 
-**Total:** 11 files, ~8,500 lines of documentation.
+**Total:** 13 files of documentation.
+
+**Companion files in fuuz-platform skill (load separately):**
+- `visualization-library.md` (2,246 lines) - Complete FusionCharts reference (80+ chart types)
+- `system-seeded-values.md` (2,156 lines) - System-seeded lookup values (modes, statuses, event types)
 
 ## Quick Start
 
@@ -69,9 +70,9 @@ fuuz-screens-v1/
 | Any screen | `element-types.md`, `component-patterns.md` |
 | Dashboard | + `dashboard-patterns.md`, `screen-runtime-context.md`, `frontend-jsonata-bindings.md` |
 | Table / Form | + `layout-templates.md`, `graphql-patterns.md` |
-| Adding charts | `dashboard-patterns.md`, `visualization-library.md` |
+| Adding charts | `dashboard-patterns.md`, + load **fuuz-platform** for `visualization-library.md` |
 | Writing JSONata | `frontend-jsonata-bindings.md`, `screen-runtime-context.md` |
-| Filter with seeded values | `system-seeded-values.md` |
+| Filter with seeded values | Load **fuuz-platform** for `system-seeded-values.md` |
 | Debugging errors | `common-errors.md` |
 
 3. **Generate the screen JSON** — Build from ROOT down, following the templates and patterns.

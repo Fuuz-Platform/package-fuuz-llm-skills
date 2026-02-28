@@ -5,7 +5,7 @@ description: Shared platform knowledge for the Fuuz Industrial Operations platfo
 
 # Fuuz Platform Reference
 
-**Version 1.5** | Last Updated: 2026-02-22
+**Version 1.6** | Last Updated: 2026-02-26
 
 Shared platform knowledge and reference material for the Fuuz Industrial Operations platform. This skill provides cross-cutting information used by all other Fuuz skills.
 
@@ -226,176 +226,65 @@ Settings can be scoped to **Client** (all users in a tenant) or **User** (indivi
 
 ---
 
-## Custom JSONata Library Reference
+## JSONata in Fuuz
 
-Fuuz extends standard JSONata with a rich custom library of bindings. These are available in transforms, flow nodes, screen expressions, and scripting contexts. Bindings are organized by availability (Frontend-only vs Shared).
+JSONata is the primary expression language used throughout Fuuz in data flow transform nodes, screen element transform props, onChange handlers, and validation expressions. Fuuz extends standard JSONata with 182+ custom platform bindings.
 
-### Frontend — Navigation & UI
+### Critical Gotchas
 
-| Binding | Description |
-|---------|-------------|
-| `$navigateTo(path, options)` | Navigate to pathname (e.g., `$navigateTo('/system/config/calendars', {'newWindow': true})`) |
-| `$navigateBack()` | Navigate back in browser history |
-| `$navigateReload()` | Reload the current page |
-| `$addNotificationMessage(title, options)` | Show notification toast (types: info, error, warning, success) |
-| `$showAlertDialog(message, options)` | Display an alert dialog to the user |
-| `$showConfirmDialog(message, options)` | Display a confirmation dialog with accept/cancel |
-| `$showFormDialog(object)` | Show a dynamic form dialog built from a configuration object |
-| `$writeToClipboard(data)` | Write data to the system clipboard |
-| `$readFromClipboard()` | Read data from the system clipboard |
+1. **No `!` operator** — Use `$not(expr)` function instead
+2. **`$not()` is a function**, not an operator — `$not($exists(x))` not `!$exists(x)`
+3. **`$round` uses banker's rounding** — `$round(2.5)` = 2, `$round(3.5)` = 4
+4. **String concatenation uses `&`** — Not `+`. `"hello" & " " & "world"`
+5. **Comparison `=` not `==`** — Single equals for comparison. No `===`.
+6. **`$now()` and `$millis()` are frozen** — Return same value for entire evaluation
+7. **`undefined` propagates** — Missing fields silently drop from results
+8. **`in` operator for membership** — `x in [1,2,3]` not `[1,2,3].includes(x)`
+9. **Ternary vs Elvis vs Null coalescing** — `? :` (ternary), `?:` (elvis, falsy default), `??` (null/undefined default)
+10. **No explicit return** — Last expression evaluated is the result
 
-### Frontend — Table Functions
+### Function Summary
 
-Access via `$components.Table1.fn.*` (replace `Table1` with the component name):
+| Category | Count | Key Functions |
+|----------|-------|---------------|
+| **Built-in String** | 21 | `$string`, `$substring`, `$contains`, `$replace`, `$split`, `$join`, `$match`, `$base64encode` |
+| **Built-in Numeric** | 12 | `$number`, `$round`, `$floor`, `$ceil`, `$formatNumber`, `$power`, `$random` |
+| **Built-in Aggregation** | 4 | `$sum`, `$max`, `$min`, `$average` |
+| **Built-in Boolean** | 3 | `$boolean`, `$not`, `$exists` |
+| **Built-in Array** | 7 | `$count`, `$append`, `$sort`, `$reverse`, `$distinct`, `$zip` |
+| **Built-in Object** | 9 | `$keys`, `$merge`, `$spread`, `$sift`, `$each`, `$type` |
+| **Built-in Date/Time** | 4 | `$now`, `$millis`, `$fromMillis`, `$toMillis` |
+| **Built-in Higher-Order** | 5 | `$map`, `$filter`, `$reduce`, `$single`, `$sift` |
+| **Platform Core Utility** | 10 | `$cuid`, `$uuid`, `$throw`, `$coalesce`, `$wait`, `$retry`, `$tryCatch` |
+| **Platform Type Predicates** | 14 | `$isArray`, `$isString`, `$isNil`, `$isNilOrEmpty`, `$isEmpty` |
+| **Platform Conversion** | 10 | `$arrayToCsv`, `$csvToArray`, `$parseInt`, `$numeral`, `$jsonToJsonSchema` |
+| **Platform String** | 26 | `$startsWith`, `$camelCase`, `$htmlEscape`, `$parseUrl`, `$urlJoin`, `$evalHandlebarsTemplate` |
+| **Platform Rich Text** | 6 | `$markdownToHtml`, `$richTextToMarkdown`, `$richTextToHTML` |
+| **Platform Object** | 15 | `$path`, `$pick`, `$omit`, `$mergeDeep`, `$flattenObject`, `$objectDiff`, `$jsonParse` |
+| **Platform Array** | 21 | `$chunk`, `$groupBy`, `$findFirst`, `$flatMap`, `$partition`, `$all`, `$any` |
+| **Platform Parallel** | 5 | `$mapParallel`, `$filterParallel`, `$groupByParallel`, `$timesParallel` |
+| **Semver** | 28 | `$semverParse`, `$semverCompare`, `$semverSatisfies`, `$semverSort` |
+| **Joins** | 5 | `$innerJoin`, `$leftOuterJoin`, `$leftSemiJoin`, `$leftAntiJoin`, `$crossJoin` |
+| **Moment.js** | 7 | `$moment`, `$momentTz`, `$momentDuration`, `$momentMax`, `$momentMin` |
+| **XML / EDI** | 8 | `$xmlToJson`, `$jsonToXml`, `$readEDI`, `$writeEDI`, `$parseX12` |
+| **Encryption / Network** | 3 | `$encryptHmac`, `$hash`, `$http` |
+| **Calendars / Scheduling** | 8 | `$eventsBetween`, `$getAvailabilityBetween`, `$scheduleGroup`, `$schedule` |
+| **Unit Conversion** | 3 | `$convertUnit`, `$getConversionFactor`, `$getUnit` |
+| **MFGx Application** | 12 | `$query`, `$mutate`, `$executeFlow`, `$integrate`, `$document`, `$executeTransform` |
+| **Frontend-Only** | 15 | `$navigateTo`, `$showAlertDialog`, `$showConfirmDialog`, `$writeToClipboard`, `$pdfToJson` |
 
-| Function | Description |
-|----------|-------------|
-| `.fn.loadData({filter, rowLimit})` | Load or reload table data with optional filter and row limit |
-| `.fn.search()` | Trigger a table search |
-| `.fn.setData()` | Directly set the table data |
-| `.fn.addRows()` | Add rows to the table |
-| `.fn.updateRows()` | Update existing rows |
-| `.fn.upsertRows()` | Insert or update rows (upsert) |
-| `.fn.deleteRows()` | Delete rows from the table |
-| `.fn.selectRow()` | Select a specific row |
-| `.fn.deselectRow()` | Deselect a specific row |
-| `.fn.selectAllRows()` | Select all rows in the table |
-| `.fn.deselectAllRows()` | Deselect all rows |
-| `.fn.selectAllFiltered()` | Select all rows matching the current filter |
-| `.fn.setSelectedRows()` | Programmatically set the selected rows |
+### Evaluation Contexts
 
-### Frontend — Form Functions
+| Feature | Screen Elements | Data Flows |
+|---------|----------------|------------|
+| Root `$` | Component data (mapPropsToPayload) | Node's current payload |
+| `metadata` | User, tenant, settings, URL params | Not available |
+| `$components` | Screen component shared state | Not available |
+| `$state` | Not available | Full flow state (payload, context, claims) |
+| `$appConfig` | Application configuration | Not available |
+| UI functions | `$navigateTo`, `$showAlertDialog`, etc. | Not available |
 
-Access via `$components.Form1.fn.*` (replace `Form1` with the component name):
-
-| Function | Description |
-|----------|-------------|
-| `.fn.setValue(field, data)` | Set the value of a specific form field |
-| `.fn.focus()` | Set focus on the form |
-| `.fn.blur()` | Remove focus from the form |
-| `.fn.loadData()` | Load data into the form |
-| `.fn.save()` | Trigger form save |
-| `.fn.validate()` | Validate the form fields |
-| `.fn.delete()` | Delete the current form record |
-| `.fn.getUpdateMutation()` | Get the GraphQL mutation for the form update |
-| `.fn.getUpdatePayload()` | Get the mutation payload |
-| `.fn.getVariables()` | Get the form variables |
-
-### Frontend — Container & ActionButton Functions
-
-| Binding | Description |
-|---------|-------------|
-| `$components.Container1.fn.hide()` | Hide the container |
-| `$components.Container1.fn.show()` | Show the container |
-| `$components.Container1.fn.toggle()` | Toggle container visibility |
-| `$components.Container1.fn.resetHidden()` | Reset container to its default visibility state |
-| `$components.ActionButton1.fn.execute({params})` | Programmatically execute an action button with parameters |
-
-### Shared — Core Utilities
-
-| Binding | Description |
-|---------|-------------|
-| `$cuid()` | Generate a collision-resistant unique ID |
-| `$uuid()` | Generate a UUID v4 |
-| `$throw(message, data?)` | Throw an error with optional data |
-| `$coalesce(array)` | Return the first non-null/undefined value from an array |
-| `$wait(ms)` | Async wait for the specified milliseconds |
-| `$retry(fn, options?, fallback?)` | Retry a function with configurable options and optional fallback |
-| `$log(message, meta?, level?)` | Log a message with optional metadata and level |
-| `$arrayToCsv()` | Convert an array of objects to CSV string |
-| `$csvToArray()` | Convert a CSV string to an array of objects |
-| `$jsonParse()` | Parse a JSON string into an object |
-| `$jsonStringify()` | Stringify an object to JSON |
-| `$markdownToHtml()` | Convert Markdown to HTML |
-| `$xmlToJson()` | Convert XML string to JSON |
-| `$jsonToXml()` | Convert JSON to XML string |
-| `$parseUrl()` | Parse a URL into its components |
-| `$objectDiff()` | Get the differences between two objects |
-
-### Shared — Array & Object
-
-| Binding | Description |
-|---------|-------------|
-| `$chunk()` | Split an array into chunks of a specified size |
-| `$uniq()` | Return unique values from an array |
-| `$groupBy()` | Group array elements by a key |
-| `$indexBy()` | Index array elements by a key (returns object) |
-| `$flatten()` | Flatten a nested array |
-| `$first()` / `$last()` | Get the first or last element of an array |
-| `$partition()` | Partition an array into two arrays based on a predicate |
-| `$mergeDeep()` | Deep merge multiple objects |
-| `$pick()` | Pick specified keys from an object |
-| `$omit()` | Omit specified keys from an object |
-| `$path()` | Get a value at a nested path |
-| `$has()` | Check if an object has a key |
-| `$toPairs()` / `$fromPairs()` | Convert object to key-value pairs and back |
-| `$flattenObject()` / `$unflattenObject()` | Flatten/unflatten nested objects to/from dot-notation keys |
-
-### Shared — Joins
-
-| Binding | Description |
-|---------|-------------|
-| `$innerJoin()` | Inner join two arrays on matching keys |
-| `$leftOuterJoin()` | Left outer join two arrays |
-| `$leftAntiJoin()` | Return left items that have no match in right |
-| `$leftSemiJoin()` | Return left items that have a match in right |
-| `$crossJoin()` | Cartesian product of two arrays |
-
-### Shared — Dates (Moment.js)
-
-| Binding | Description |
-|---------|-------------|
-| `$moment()` | Create a Moment.js date object |
-| `$momentTz()` | Create a timezone-aware Moment object |
-| `$momentTzTimezones()` | List available timezones |
-| `$momentTzGuess()` | Guess the user's timezone |
-| `$momentMax()` / `$momentMin()` | Get the max or min from a set of dates |
-
-### Shared — Query & Execute
-
-| Binding | Description |
-|---------|-------------|
-| `$query()` | Execute a GraphQL query |
-| `$mutate()` | Execute a GraphQL mutation |
-| `$executeFlow()` | Execute a data flow by ID |
-| `$executeTransform()` | Execute a saved transform |
-| `$executeDeviceGatewayFunction()` | Execute a device gateway function |
-| `$executeDeviceFunction()` | Execute a device function |
-| `$document()` | Generate a document |
-| `$getCalendar()` | Retrieve calendar data |
-
-### Shared — Type Checking
-
-| Binding | Description |
-|---------|-------------|
-| `$isArray()` | Check if value is an array |
-| `$isString()` | Check if value is a string |
-| `$isBoolean()` | Check if value is a boolean |
-| `$isInteger()` | Check if value is an integer |
-| `$isFloat()` | Check if value is a float |
-| `$isNumber()` | Check if value is a number |
-| `$isObject()` | Check if value is an object |
-| `$isUndefined()` | Check if value is undefined |
-| `$isNil()` | Check if value is null or undefined |
-| `$isNaN()` | Check if value is NaN |
-| `$isEmpty()` | Check if value is empty |
-| `$isNilOrEmpty()` | Check if value is null, undefined, or empty |
-
-### Shared — String
-
-| Binding | Description |
-|---------|-------------|
-| `$camelCase()` | Convert string to camelCase |
-| `$snakeCase()` | Convert string to snake_case |
-| `$kebabCase()` | Convert string to kebab-case |
-| `$startCase()` | Convert string to Start Case |
-| `$lowerFirst()` | Lowercase the first character |
-| `$upperFirst()` | Uppercase the first character |
-| `$startsWith()` | Check if string starts with a substring |
-| `$endsWith()` | Check if string ends with a substring |
-| `$htmlEscape()` / `$htmlUnescape()` | Escape or unescape HTML entities |
-| `$uriEscape()` / `$uriUnescape()` | Encode or decode URI components |
-| `$pluralize()` / `$singularize()` | Pluralize or singularize an English word |
+For complete documentation of all operators, all 65 built-in functions, all 182+ platform functions with signatures, programming constructs (variables, lambdas, closures, partial application, regex, chaining), both evaluation contexts with full `$components` and `$state` details, the transform props pattern, and `metadata` fields, see `references/jsonata-reference.md`.
 
 ---
 
@@ -524,6 +413,7 @@ Use this quick reference to determine which skill to use:
 | `references/fuuz-platform-development.md` | ~500 | Platform development patterns: node flow architecture, data access patterns, JavaScript vs JSONata decision matrix, duration field handling, screen component hierarchy, context/state management, platform built-ins. |
 | `references/graphql-essentials.md` | ~505 | GraphQL quick reference: Application API `equals`/`contains`/`startsWith` filter operators, relationship mutations (connect/disconnect/create nested), GraphQL subscriptions, manufacturing query patterns (work orders, OEE, inventory, production trace), using GraphQL in screens/flows/JSONata ($query/$mutate/$executeSavedQuery), aggregations, best practices, anti-patterns. |
 | `references/jsonata-javascript-essentials.md` | ~328 | JSONata & JavaScript quick reference: where JSONata is used in Fuuz (6 contexts), basics quick reference, Fuuz-specific bindings ($moment, $query, $mutate, $urlJoin), Script Editor JavaScript runtime with `$` payload access pattern and `$variableName` context access, diagnostic script, manufacturing patterns (OEE color coding, duration formatting, inventory grouping, shift-aware time), Transformation Explorer testing tool, anti-patterns. |
+| `references/jsonata-reference.md` | ~1,050 | Authoritative JSONata reference: core syntax, all operators (path/numeric/comparison/boolean/string/conditional/assignment/chaining/transform), all 65 built-in functions, all 182+ platform functions by package, programming constructs (variables, lambdas, closures, partial application, regex, recursion), both evaluation contexts (Screen Elements and Data Flows), $components documentation, metadata fields, $state documentation, transform props pattern, evaluation pipeline. |
 
 ### Reading Order
 
@@ -535,6 +425,7 @@ Use this quick reference to determine which skill to use:
 | Building dashboards | `visualization-library.md` |
 | Understanding packages | `package-anatomy.md` |
 | Looking up a specific value | `system-seeded-values.md` |
+| Writing JSONata expressions | `jsonata-reference.md` |
 
 ---
 
@@ -625,3 +516,4 @@ When using Claude or other AI tools to build Fuuz applications, follow these rul
 | 1.3 | February 2026 | Added Custom JSONata Library Reference (full binding catalog by category), Application Configuration ($appConfig) section, Project Documentation Standards, MongoDB Data Modeling guidance, expanded Integration Best Practices (Plex data sources, chunking, NetSuite caveats, revision history), updated AI Development Rules (JSONata input/output discipline, .fuuz package generation, AI use cases for QA/mockups/UAT/docs) |
 | 1.4 | 2026-02-21 | Added 4 new reference files: integration-landscape.md (500+ system integration catalog with protocol matrix), jsonata-bindings-complete.md (all 294 custom JSONata bindings), graphql-syntax-patterns.md (complete GraphQL API reference with aggregations/mutations/error catalog), fuuz-platform-development.md (node flow architecture, data access patterns, JS vs JSONata, duration handling, screen components, debugging) |
 | 1.5 | 2026-02-22 | Added 2 new reference files: graphql-essentials.md (Application API filter operators, relationship mutations, subscriptions, manufacturing queries, using GraphQL in JSONata), jsonata-javascript-essentials.md (Script Editor $ access pattern, diagnostic script, manufacturing JSONata patterns, Transformation Explorer) |
+| 1.6 | 2026-02-26 | Added comprehensive jsonata-reference.md (authoritative JSONata reference consolidating all operators, 65 built-in functions, 182+ platform functions, programming constructs, both evaluation contexts, $components/$state/$metadata documentation, transform props pattern). Replaced inline Custom JSONata Library Reference section in SKILL.md with condensed summary table pointing to the new reference file. |

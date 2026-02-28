@@ -1,16 +1,17 @@
 ---
 name: fuuz-screens
-description: Generate Fuuz Industrial Operations platform screen JSON for dashboards, tables, forms, and reports. Use when requests mention "fuuz screen", "screen designer", "dashboard screen", "table screen", "form screen", "fuuz UI", "screen JSON", "canvas design", or building user interfaces for Fuuz applications. Covers all 59 screen element types with full property documentation (Container, Form, Table, DisplayText, ActionButton, Chart, Icon, Tabs, Dialog, ResizablePanel, and 49 more), layout patterns, data binding with JSONata, FusionCharts visualizations, FontAwesome icons, and responsive flex design. Includes element types reference with required properties to prevent React render errors, dashboard pattern examples from production admin screens, frontend JSONata binding reference, GraphQL query patterns, visualization library reference, and cross-references the fuuz-flows skill for web/backend flows.
+description: Generate Fuuz Industrial Operations platform screen JSON for dashboards, tables, forms, and reports. Use when requests mention "fuuz screen", "screen designer", "dashboard screen", "table screen", "form screen", "fuuz UI", "screen JSON", "canvas design", or building user interfaces for Fuuz applications. Covers all 75 screen element types across 5 categories (Layout 12, Input 41, Data 8, Display 4, Interaction 10) with full property documentation (Container, Form, Table, DisplayText, ActionButton, Chart, Icon, Tabs, Dialog, ResizablePanel, and more), layout patterns, data binding with JSONata, FusionCharts visualizations, FontAwesome icons, and responsive flex design. Includes Screen Designer concepts (Craft.js architecture, element flags, shared field sets, field type glossary, transform dual-mode editing), element types reference with required properties to prevent React render errors, screen element JSONata context documentation (root input, metadata, $components, $appConfig, frontend-only functions, transform props pattern), dashboard pattern examples from production admin screens, frontend JSONata binding reference, GraphQL query patterns, visualization library reference, and cross-references the fuuz-flows skill for web/backend flows.
 ---
 
 # Fuuz Screen Designer Skill
 
-**Version 1.3 | 2026-02-22**
+**Version 1.4 | 2026-02-26**
 
 ### Version History
 
 | Version | Date | Changes |
 |---|---|---|
+| 1.4 | 2026-02-26 | Added Screen Designer Concepts section (Craft.js architecture, canvas elements, forms, data providers, input elements). Added element flags table. Added shared field sets documentation (makeBasicFields, DISPLAY_FIELDS variants, VALIDATION_FIELDS variants, ADVANCED_FIELDS, BEHAVIOR_FIELDS, LENGTH_VALIDATION_FIELDS). Added default props specification. Added field type glossary. Added transform fields dual-mode explanation. Updated element category counts (Layout 12, Input 41, Data 8, Display 4, Interaction 10 = 75 total). Added shared data fields (READ_PREFERENCE_INPUT, Common Data Query Pattern, Data Subscription Pattern). Added comprehensive screen element JSONata context documentation ($, metadata paths, $components shared state, $appConfig, frontend-only functions, transform props pattern). Added critical JSONata gotchas for screen expressions. |
 | 1.3 | 2026-02-22 | Added screen-essentials.md reference: MainFormContainer standard pattern, action pipeline structure (10 action types), screen context functions, ISA-101 industrial compliance, component library reference, design checklist |
 | 1.2 | 2026-02-21 | Added OEE dashboard domain reference (formulas, state classifications, time windows, calculation patterns, GraphQL queries). Added Stimulsoft Reports reference for document design (.mrt files). Documentation bake-in: all external reference content now included in skill package. |
 | 1.1 | February 2026 | Critical fixes from Screen-Skill-Improvements training doc: menu column dataPath fix, mutation payload array structure, action vs actions property comparison, form action field required properties, action chain execution order and data flow, pre-transform usage rules, table query field rules, common errors section, setup table CRUD checklist. Added Mobile App Design Guidelines, Inline Web Flows note. Fixed incorrect examples in layout-templates reference. |
@@ -23,6 +24,204 @@ description: Generate Fuuz Industrial Operations platform screen JSON for dashbo
 This skill generates complete, importable Fuuz screen JSON files for the Fuuz Industrial Operations Platform (fuuz.com). Fuuz screens are defined as JSON with a craft.js-based component tree, rendered as React components by the platform's component resolver. Screens are built within the **Application Designer** interface.
 
 **Technology stack:** craft.js (component framework), FusionCharts (visualizations), FontAwesome (icons), Material UI (typography/theming), JSONata (expressions).
+
+---
+
+## Screen Designer Concepts
+
+The screen designer uses **Craft.js** to provide a drag-and-drop visual editor. Users compose screens by placing **elements** onto a canvas.
+
+- A **Screen** is the root canvas element. It contains child elements arranged in a layout hierarchy.
+- A **Canvas Element** (`canvas: true`) can contain child elements. Examples: Screen, Container, Accordion, Form, Table, Cards.
+- A **Form** (`isForm: true`) provides data context to child input elements. Forms query a data model and expose field values. Input elements inside a form bind to fields via `dataPath`.
+- A **Data Provider** (`isDataProvider: true`) queries data and exposes it to child elements. Forms and Tables are data providers.
+- An **Input Element** (`requiresForm: true`) must be placed inside a Form. It binds to a form field via `dataPath` and supports validation, transforms, and onChange handlers.
+
+### Element Flags
+
+| Flag | Meaning |
+|---|---|
+| `canvas` | Can contain child elements |
+| `isContainer` | Generic container (accepts most child types) |
+| `isForm` | Provides form data context to children |
+| `isDataProvider` | Queries data and provides it to children |
+| `isTable` | Table-specific data provider |
+| `isCard` | Card-specific layout |
+| `isButton` | Button element |
+| `requiresForm` | Must be placed inside a Form |
+| `excludeFromToolbox` | Not user-addable (e.g., Screen root element) |
+
+### Element Categories
+
+| Category | Count | Description |
+|---|---|---|
+| Layout | 12 | Containers, screens, tabs, accordions |
+| Input | 41 | Form-bound input fields |
+| Data | 8 | Forms, tables, cards, data trees |
+| Display | 4 | Charts, timers, calendars, event console |
+| Interaction | 10 | Buttons (flow, action, split, menu, custom) |
+
+**Total: 75 element types across 5 categories.**
+
+### Shared Field Sets (Input Elements)
+
+Most input elements reuse standard field sets. Each element's documentation only lists **custom fields** beyond these sets, and notes which shared sets it uses.
+
+#### Basic Fields (`makeBasicFields`)
+
+Generated by `makeBasicFields({ filterType, defaultValueProps, labelRequired, fields: { field, predicate } })`. Parameters control which optional fields are included.
+
+| Field | Type | Description |
+|---|---|---|
+| `field` | graphql (field picker) | Data model field binding. Auto-sets dataPath and label on change. Optional (controlled by `fields.field` param). |
+| `dataPath` | text | Data path within form data. Required. |
+| `defaultValue` | json | Default value for the input. |
+| `predicate` | combobox | Filter predicate. Options: `_contains`, `_containsObject`, `_eq`, `_endsWith`, `_gt`, `_gte`, `_has`, `_in`, `_isNull`, `_lt`, `_lte`, `_startsWith`. Optional (controlled by `fields.predicate` param). |
+| `formElement` | node | Reference to the parent form element. |
+| `label` | transform (smartInput: text) | Display label. Required by default. |
+| `description` | text | Helper text (multiline). |
+
+#### Display Fields (`DISPLAY_FIELDS`)
+
+| Field | Type | Description |
+|---|---|---|
+| `padding` | slider (0-96, step 8) | Element padding. |
+| `width` | text | Element width. Required. |
+| `height` | text | Element height. Required. |
+| `alignItems` | combobox | Alignment. Options: `start`, `end`, `center`. |
+| `visible` | transform (smartInput: checkbox) | Visibility based on logic. |
+
+**Variants:**
+- `DISPLAY_FIELDS_WITH_VARIANT` -- adds `variant` (options: standard | outlined | filled)
+- `DISPLAY_FIELDS_WITH_FONT_SIZE` -- adds variant + font size fields
+- `DISPLAY_FIELDS_WITH_FONT_SIZE_WITHOUT_VARIANT` -- adds font size fields without variant (for react-select based inputs)
+
+#### Font Size Fields (`FONT_SIZE_FIELDS`)
+
+| Field | Type | Description |
+|---|---|---|
+| `labelFontSize` | slider (8-48, step 4) | Label font size. Clearable. |
+| `dataFontSize` | slider (8-48, step 4) | Data/input font size. Clearable. |
+
+#### Validation Fields (`VALIDATION_FIELDS`)
+
+| Field | Type | Description |
+|---|---|---|
+| `validation.required` | checkbox | Whether the field is required. |
+| `uniqueValidationEnabled` | checkbox | Enable unique validation. |
+| `validation.unique.api` | options | API for unique check (Application | System). Visible when unique enabled. |
+| `validation.unique.model` | text | Data model for unique check. Visible when unique enabled. |
+| `validation.unique.excludeId` | checkbox | Exclude current record from unique check. Visible when unique enabled. |
+| `validation.unique.byFields` | fieldGroup | Fields to check uniqueness by. Sub-fields: `field` (text, required), `dataPath` (text). Visible when unique enabled. |
+| `validation.transform` | jsonata | Custom validation transform. Should return error message string or undefined. |
+
+**Variant:** `VALIDATION_FIELDS_WITH_NUMBER_VALIDATION` -- adds: `validation.minValue` (transform/number), `validation.maxValue` (transform/number), `validation.maxDigits` (transform/integer), `validation.disallowNegative` (transform/checkbox), `validation.disallowDecimals` (transform/checkbox)
+
+#### Length Validation Fields (`LENGTH_VALIDATION_FIELDS`)
+
+| Field | Type | Description |
+|---|---|---|
+| `validation.minLength` | integer | Minimum length. |
+| `validation.maxLength` | integer | Maximum length. |
+
+#### Advanced Fields (`ADVANCED_FIELDS`)
+
+| Field | Type | Description |
+|---|---|---|
+| `disabled` | transform (smartInput: checkbox) | Disabled state based on logic. |
+| `onChange` | jsonata | Transform run on every value change. |
+| `data` | transform | Data transformations for this field. |
+| `fields` | json | Additional query fields (array of dataPaths). |
+| `targetDataPath` | text | Target data path override. |
+
+#### Behavior Fields (`BEHAVIOR_FIELDS`)
+
+| Field | Type | Description |
+|---|---|---|
+| `formatString` | text | Numeric format string (e.g., "0.000"). |
+| `step` | transform (smartInput: integer) | Step value for the input. |
+
+### Default Props (Input Elements)
+
+All input elements start with these default property values:
+
+```json
+{
+  "padding": 8,
+  "width": "100%",
+  "height": "auto",
+  "validation": { "required": false },
+  "uniqueValidationEnabled": false,
+  "visible": true
+}
+```
+
+### Shared Data Fields
+
+#### Read Preference (`READ_PREFERENCE_INPUT`)
+
+Used by Table and Cards in their Data section.
+
+| Field | Type | Description |
+|---|---|---|
+| `query.readPreference` | combobox | Server read preference. Options: `primaryPreferred` (default, consistent data), `secondary` (offload reads, may be stale). |
+
+#### Common Data Query Pattern
+
+Used by Form, Table, and Cards. Fields typically appear in a "Data" section:
+
+| Field | Type | Description |
+|---|---|---|
+| `query.api` | combobox | API source. Options: Application | System. |
+| `query.model` | options (dynamic) | Data model. Options queried from model definitions. |
+| `query.autoLoad` | checkbox | Auto-load data on mount. |
+| `query.parameters` | jsonata | Parameters transform. |
+| `query.filterPredicate` | graphqlWhere | Filter predicate with transform support. |
+| `query.fields` | json | Additional query fields. |
+
+#### Data Subscription Pattern
+
+Used by Form, Table, and Cards in their Advanced section:
+
+| Field | Type | Description |
+|---|---|---|
+| `query.dataSubscription.enabled` | checkbox | Enable real-time data subscription. |
+| `query.dataSubscription.topics` | fieldGroup | Subscription topics. Sub-field: `topic` (text, required). Visible when enabled. |
+| `query.dataSubscription.filterTransform` | jsonata | Filter incoming subscription data. Visible when enabled. |
+| `query.dataSubscription.valueTransform` | jsonata | Transform subscription values. Visible when enabled. |
+
+### Field Type Glossary
+
+| Type | Description |
+|---|---|
+| `text` | Text input field |
+| `slider` | Numeric slider with min/max/step |
+| `checkbox` | Boolean checkbox |
+| `switch` | Boolean toggle switch |
+| `options` | Single-select radio/button options |
+| `combobox` | Dropdown select (single or multi) |
+| `transform` | JSONata expression with smartInput for simple mode |
+| `jsonata` | Pure JSONata expression editor |
+| `fieldGroup` | Repeatable group of sub-fields |
+| `border` | Border configuration input |
+| `color` | Color picker |
+| `icon` | Icon picker |
+| `integer` | Integer number input |
+| `action` | Action step builder (array of action steps) |
+| `chart` | Chart configuration editor |
+| `duration` | Duration picker |
+| `json` | JSON editor |
+| `graphqlWhere` | GraphQL where clause builder |
+| `graphql` | GraphQL field picker |
+| `node` | Element reference picker |
+
+### Transform Fields (Dual-Mode Editing)
+
+Fields with `type: 'transform'` support dual-mode editing:
+- **Simple mode** -- renders a widget matching the `smartInput.type` (e.g., checkbox, text, color, integer). Users set a simple static value.
+- **Advanced mode** -- full JSONata expression editor. Users write dynamic expressions.
+
+This allows users to set simple static values or write dynamic expressions. In documentation, noted as `transform (smartInput: <type>)`.
 
 ---
 
@@ -115,7 +314,7 @@ Reference for all system-seeded lookup values (modes, statuses, event types, etc
 
 ### Fuuz Element Types Reference
 **Project knowledge file:** `FUUZ_ELEMENT_TYPES_REFERENCE.md`
-Comprehensive documentation of all 59 observed element types with detailed property tables. Extracted from 1,000+ real elements across 19 production screens. This screen skill incorporates a condensed version in the "Element Types & Properties Reference" section. Consult the full reference for edge-case properties or rarely-used element types.
+Comprehensive documentation of all 75 element types with detailed property tables. Extracted from 1,000+ real elements across 19 production screens. This screen skill incorporates a condensed version in the "Element Types & Properties Reference" section. Consult the full reference for edge-case properties or rarely-used element types.
 
 ### Fuuz Admin Dashboard Examples
 **Project knowledge files:** `Tenant_App_Admin_Developer_Home.json`, `Enterprise_Admin_Home.json`
@@ -129,7 +328,7 @@ This skill includes detailed reference files in the `references/` directory. **R
 
 | File | Lines | Content |
 |---|---|---|
-| `references/element-types.md` | ~463 | All 59 element types with property tables |
+| `references/element-types.md` | ~463 | All 75 element types with property tables |
 | `references/component-patterns.md` | ~1,500+ | CSS rules, Container, Form, DisplayText, RichText, ActionButton, Icon, FlowButton, MenuButton, Table, ResizablePanel, Filter components, **Action vs Actions property naming, Action Chain Data Flow, Form Action Field Configuration, Mutation Visual Builder, Complete CRUD action chain examples, Setup Table Screen Checklist** |
 | `references/screen-runtime-context.md` | ~313 | Runtime metadata, components, transform payload/trace/result, practical examples |
 | `references/frontend-jsonata-bindings.md` | ~339 | Curated frontend JSONata bindings (navigation, data, formatting, component functions) |
@@ -137,8 +336,8 @@ This skill includes detailed reference files in the `references/` directory. **R
 | `references/dashboard-patterns.md` | ~488 | Chart/Visualization components, pageLoadAction, KPI cards, dashboard architecture |
 | `references/layout-templates.md` | ~507 | Screen layout templates (Dashboard, Table, Form, Mobile), table variants, action chains, responsive patterns |
 | `references/common-errors.md` | ~130 | Quick-reference troubleshooting for render errors, data binding issues, action chain/mutation errors, and debugging tips |
-| `references/visualization-library.md` | ~2,246 | Complete FusionCharts reference (80+ chart types) |
-| `references/system-seeded-values.md` | ~2,156 | System-seeded lookup values (modes, statuses, event types) |
+| ~~`references/visualization-library.md`~~ | ~2,246 | **Located in `fuuz-platform` skill** (`fuuz-platform/references/visualization-library.md`). Complete FusionCharts reference (80+ chart types). |
+| ~~`references/system-seeded-values.md`~~ | ~2,156 | **Located in `fuuz-platform` skill** (`fuuz-platform/references/system-seeded-values.md`). System-seeded lookup values. |
 | `references/oee-dashboard-domain.md` | ~520 | OEE/TEEP/MTBF/MTTR formulas, state classifications, time windows, calculation patterns, GraphQL queries |
 | `references/stimulsoft-reports.md` | ~877 | Stimulsoft report architecture, band types, expressions, 7+ report types, Fuuz integration |
 | `references/screen-essentials.md` | ~293 | Screen quick reference: MainFormContainer standard pattern (EssentialDetails/PrimaryContent/CodeContent/SettingsContent/CustomFieldContent/QuickActions/SaveAction), action pipelines with 10 action types (mutate/query/confirm/notify/navigate/refresh/setContext/openDialog/executeFlow/download), screen context functions (setContext/mergeContext/setContextValue/deleteContextValue), ISA-101 compliance for industrial dashboards, component library reference (AG Grid, FusionCharts, Stimulsoft, Draft.js), design checklist |
@@ -151,8 +350,8 @@ This skill includes detailed reference files in the `references/` directory. **R
 | Dashboard screen | + `dashboard-patterns.md`, `screen-runtime-context.md`, `frontend-jsonata-bindings.md` |
 | Table/form screen | + `layout-templates.md`, `graphql-patterns.md` |
 | Debugging render errors or action chain issues | `common-errors.md` |
-| Adding charts/visualizations | `dashboard-patterns.md`, `visualization-library.md` |
-| Filter/select with seeded values | `system-seeded-values.md` |
+| Adding charts/visualizations | `dashboard-patterns.md`, + load **fuuz-platform** for `visualization-library.md` |
+| Filter/select with seeded values | Load **fuuz-platform** for `system-seeded-values.md` |
 | Writing JSONata expressions | `frontend-jsonata-bindings.md`, `screen-runtime-context.md` |
 | Mobile app screen | + `layout-templates.md`, review Mobile App Design Guidelines section in SKILL.md |
 | Standard CRUD form screen | `screen-essentials.md` (MainFormContainer pattern), `component-patterns.md` |
@@ -431,6 +630,212 @@ Every node in the design tree follows this pattern:
 | `Text` | `DisplayText` or `RichText` |
 | `Box` | `Container` |
 | `ResizableFilterPanel` | `ResizablePanelLayout` |
+
+---
+
+## Screen Element JSONata Context
+
+JSONata expressions in screen elements (transform props, onChange handlers, validation expressions, table column data/style) receive a specific evaluation context. Understanding this context is essential for writing correct screen expressions.
+
+### Root Input (`$`)
+
+The root `$` is the component-specific data, assembled by each component's `mapPropsToPayload`. It varies by component type:
+- **Form inputs**: current form field values
+- **Table columns**: current row data
+- **Action buttons**: data context of the triggering element
+
+### `metadata` -- Platform Metadata
+
+Available in all frontend JSONata expressions. Assembled from Redux state.
+
+| Path | Description |
+|---|---|
+| `metadata.user` | Current user object -- `.id`, `.firstName`, `.lastName`, `.email`, `.environments`, `.accessTypeId` |
+| `metadata.tenant` | Current tenant -- `.id`, `.name`, `.tenantTypeId` |
+| `metadata.userTenants` | All tenants the user belongs to -- `[].id`, `[].tenant.id`, `[].tenant.name` |
+| `metadata.userRoles` | Roles -- `[].role.id`, `[].role.name`, `[].role.description`, `[].role.homeScreenId` |
+| `metadata.screen` | Current screen metadata |
+| `metadata.environment` | Environment name (from enterprise) |
+| `metadata.platformVersion` | Platform version string |
+| `metadata.settings` | Localization: `.DateFormat`, `.TimeFormat`, `.DateTimeFormat`, `.IntegerFormat`, `.FloatFormat`, `.Locale`, `.TimeZone`, `.AlwaysDisplayTimeZones` |
+| `metadata.enterprise` | Enterprise -- `.id`, `.name`, `.domain`, `.maintenanceMode`, `.platformVersion`, `.environment` |
+| `metadata.urlParameters` | URL path parameters (e.g., `:id` from `/screens/:id`) |
+| `metadata.querystring` | URL query string parameters |
+
+### `$components` -- Screen Component Shared State
+
+Hierarchical store of all named screen components. Each component registers:
+
+```
+$components.<Name>.data     -- Component's current data
+$components.<Name>.fn       -- Component's callable functions
+$components.<Name>.context  -- Component-specific context (e.g., row data in tables)
+```
+
+#### Table Component (`$components.MyTable`)
+
+| Path | Description |
+|---|---|
+| `.data` | Current table row data |
+| `.fn.loadData({filter, rowLimit})` | Reload data from backend |
+| `.fn.search({rowsPerPage})` | Search with filter form |
+| `.fn.setRows(array)` | Overwrite all rows |
+| `.fn.addRows(array)` | Append rows |
+| `.fn.updateRows(array)` | Update existing rows by id |
+| `.fn.upsertRows(array)` | Add or update rows by id |
+| `.fn.deleteRows(array)` | Delete rows by id |
+| `.fn.selectRow(array)` | Select rows |
+| `.fn.deselectRow(array)` | Deselect rows |
+| `.fn.toggleRowSelection(array)` | Toggle selection |
+| `.fn.selectAllRows()` | Select all rows |
+| `.fn.deselectAllRows()` | Deselect all rows |
+| `.fn.selectAllFiltered()` | Select all filtered rows |
+| `.fn.deselectAllFiltered()` | Deselect all filtered rows |
+| `.fn.setSelectedRows(array)` | Set exact selection |
+| `.fn.setData(data)` | Set table data directly |
+
+#### Form Component (`$components.MyForm`)
+
+| Path | Description |
+|---|---|
+| `.data` | Current form field values |
+| `.fn.setValue(field, value)` | Set a field value |
+| `.fn.focus(field)` | Focus a field |
+| `.fn.blur(field)` | Blur a field |
+| `.fn.loadData()` | Reload form data |
+| `.fn.validate()` | Validate and return errors |
+| `.fn.save(saveAll?)` | Save the form |
+| `.fn.delete()` | Delete form data |
+| `.fn.disableField(field)` | Disable a field |
+| `.fn.enableField(field)` | Enable a field |
+| `.fn.getUpdateMutation()` | Get GraphQL mutation |
+| `.fn.getUpdatePayload()` | Get mutation variables |
+| `.fn.getVariables()` | Get all form variables |
+
+#### Container Component (`$components.MyContainer`)
+
+| Path | Description |
+|---|---|
+| `.fn.hide()` | Hide the container |
+| `.fn.show()` | Show the container |
+| `.fn.toggle()` | Toggle visibility |
+| `.fn.resetHidden()` | Reset hidden fields |
+| `.fn.collapse()` | Collapse the container |
+| `.fn.expand()` | Expand the container |
+
+#### Screen Element (`$components.MyScreen`)
+
+| Path | Description |
+|---|---|
+| `.context` | Screen context data |
+| `.fn.hide()` | Hide |
+| `.fn.show()` | Show |
+| `.fn.toggle()` | Toggle visibility |
+| `.fn.showLoading()` | Show loading indicator |
+| `.fn.hideLoading()` | Hide loading indicator |
+| `.fn.executePageLoadAction()` | Re-execute page load action |
+
+#### TabBar Component (`$components.MyTabBar`)
+
+| Path | Description |
+|---|---|
+| `.tabIndex` | Current tab index (number) |
+| `.tabs` | Array of tab context objects |
+| `.currentTab` | Current tab context object |
+| `.fn.setTab(index)` | Switch to tab by index |
+| `.fn.enableTab(index)` | Enable a tab |
+| `.fn.disableTab(index)` | Disable a tab |
+| `.fn.showTab(index)` | Show a tab |
+| `.fn.hideTab(index)` | Hide a tab |
+
+#### Widget Element (`$components.MyWidget`)
+
+| Path | Description |
+|---|---|
+| `.fn.setParams(params)` | Set parameters for the embedded screen |
+
+#### Action / Flow / Split Button (`$components.MyButton`)
+
+| Path | Description |
+|---|---|
+| `.fn.execute(payload?)` | Execute the button's action with optional payload |
+
+#### Cards Component (`$components.MyCards`)
+
+| Path | Description |
+|---|---|
+| `.data` | Array of card data objects |
+| `.fn.loadData()` | Load/reload card data |
+| `.fn.search()` | Search cards using filter form |
+
+### `$appConfig` -- Application Configuration
+
+The tenant's application configuration object. Available in all local (non-remote) frontend evaluations.
+
+### Frontend-Only Functions
+
+These functions are only available in browser context (screen element expressions):
+
+| Function | Description |
+|---|---|
+| `$navigateTo(pathname, options?)` | Navigate to URL. Options: `{newWindow, replace}` |
+| `$navigateBack()` | Navigate back in history |
+| `$navigateReload()` | Reload current screen |
+| `$showAlertDialog(message, options?)` | Show alert dialog |
+| `$showConfirmDialog(message, options?)` | Show confirmation dialog (returns boolean) |
+| `$showFormDialog(formProps)` | Show form dialog |
+| `$showScreenDialog(props)` | Show screen dialog |
+| `$retrieveFileContent(fileId, encoding?)` | Download and decode a file by ID |
+| `$addNotificationMessage(title, options?)` | Show UI notification |
+| `$writeToClipboard(data)` | Write to clipboard |
+| `$readFromClipboard()` | Read from clipboard |
+
+### Transform Props Pattern
+
+Screen element props that accept JSONata use this object structure:
+
+```json
+{
+  "__transform": "expression or { id: savedTransformId }",
+  "__remote": false,
+  "__language": "JSONata",
+  "__dynamicFields": {
+    "payload": ["fieldA", "fieldB"],
+    "context": ["metadata.user"]
+  },
+  "__cacheKey": "unique-key",
+  "__refreshInterval": 5000,
+  "__fallbackValue": "default"
+}
+```
+
+| Key | Description |
+|---|---|
+| `__transform` | JSONata expression string, or `{id}` / `{name}` for saved transform |
+| `__remote` | `true` to evaluate server-side (default `false`) |
+| `__language` | `"JSONata"` (default) or `"JavaScript"` |
+| `__dynamicFields` | Paths in payload/context that the transform depends on. When values at these paths change, the transform re-executes and the component re-renders. Shape: `{ payload: ["data.createdByUser.id"], context: [] }`. Set to `false` to evaluate once only. |
+| `__cacheKey` | Unique key for storing the transform result, scoped to the element. |
+| `__refreshInterval` | Milliseconds between automatic re-evaluations |
+| `__fallbackValue` | Default value while transform is pending |
+
+---
+
+## Critical JSONata Gotchas for Screen Expressions
+
+These are the most common JSONata mistakes when writing screen element expressions. Review before writing any non-trivial expression.
+
+1. **No `!` operator** -- Use `$not(expr)` function instead. `$not($exists(x))` not `!$exists(x)`.
+2. **`$not()` is a function**, not an operator -- Always call it as `$not(expression)`.
+3. **Ternary vs Elvis vs Null Coalescing** -- `expr ? truthy : falsy` (ternary), `expr ?: default` (elvis: default when falsy), `expr ?? default` (null coalescing: default when null/undefined only). These are three distinct operators.
+4. **String concatenation uses `&`** -- Not `+`. Write `"hello" & " " & "world"`.
+5. **Comparison uses `=` not `==`** -- Single equals for comparison. No `===` or `==` in JSONata.
+6. **`in` operator for membership** -- `x in [1,2,3]` not `[1,2,3].includes(x)`.
+7. **`$round` uses banker's rounding** -- Rounds to nearest even on .5 boundary. `$round(2.5)` = 2, `$round(3.5)` = 4.
+8. **`$now()` and `$millis()` are frozen** -- Return same value for entire evaluation (consistent timestamps).
+9. **No explicit return** -- Last expression evaluated is the result.
+10. **`undefined` propagates** -- Accessing a missing field returns `undefined`, which silently drops from results rather than erroring.
+11. **Singleton array equivalence** -- JSONata treats `[42]` and `42` as interchangeable in path expressions.
 
 ---
 

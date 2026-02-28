@@ -46,9 +46,14 @@ Comprehensive skill for building production-ready data flows on the Fuuz Industr
 4. **flow-patterns.md** - 5 complete flow examples with every node configured
 5. **time-schedule-bindings.md** - Schedule and moment timezone functions
 6. **common-pitfalls.md** - Critical debugging patterns and error solutions
-7. **system-schema.json** - Complete System API GraphQL schema (49k lines)
-8. **system-seeded-values.md** - All platform seeded values (2k+ lines)
-9. **visualization-library.md** - Fusion Charts configuration reference
+7. **flow-design-patterns-advanced.md** - Advanced flow patterns
+8. **flow-context-reference.md** - Flow JSON envelope, 21 node type examples
+9. **flow-essentials.md** - Quick reference, manufacturing flow patterns
+
+### Companion Skills (Not Included — Load Separately)
+
+- **fuuz-system-schema** - Complete System API GraphQL schema (158 system models, 2,676 fields)
+- **fuuz-platform** - System seeded values, visualization library, connectors, platform glossary
 
 ## Key Features
 
@@ -57,7 +62,7 @@ Comprehensive skill for building production-ready data flows on the Fuuz Industr
 ✅ **Performance Optimizations** - Query node vs $query(), timeout strategies  
 ✅ **Error Solutions** - Common pitfalls with debugging strategies  
 ✅ **Production Patterns** - 5 complete flow examples  
-✅ **System Schema** - Full System API reference included  
+✅ **System Schema** - Available via companion fuuz-system-schema skill
 ✅ **Naming Standards** - Required conventions for flows and nodes  
 ✅ **Saved Transforms** - Reusability patterns
 
@@ -100,9 +105,9 @@ When a new version is released:
 - 5 complete flow pattern examples
 - Time/schedule binding reference
 - Critical pitfalls and debugging guide
-- System schema (49k lines)
-- System seeded values reference
-- Fusion Charts visualization library
+- System seeded values reference (now in fuuz-platform)
+- Fusion Charts visualization library (now in fuuz-platform)
+- System schema (now in fuuz-system-schema)
 
 ## Companion Skills
 
@@ -112,7 +117,8 @@ This skill works best alongside other Fuuz accelerator skills:
 |-------|---------|------------|
 | **fuuz-schema** | Data model design & package generation | When building flows that query/mutate custom data models |
 | **fuuz-screens** | Screen creation & UI design | When building web flows (Screen type) that support dashboards, HMIs, or custom screen actions |
-| **fuuz-platform** | Shared platform reference | For connector configurations, device driver details, system seeded values, and cross-skill task routing |
+| **fuuz-platform** | Shared platform reference | For connector configurations, device driver details, system seeded values, visualization library, and cross-skill task routing |
+| **fuuz-system-schema** | System API GraphQL schema | When you need exact field names/types for system models (User, Connection, DataFlow, etc.) |
 
 ## Support
 

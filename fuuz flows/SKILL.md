@@ -5,7 +5,7 @@ description: Build data flows for the Fuuz Industrial Operations platform (fuuz.
 
 # Fuuz Data Flow Builder
 
-**Version 1.3** | Last Updated: 2026-02-22
+**Version 1.4** | Last Updated: 2026-02-26
 
 Build comprehensive, production-ready data flows for the Fuuz Industrial Operations platform.
 
@@ -18,6 +18,52 @@ Fuuz supports three flow execution contexts:
 **Web Flows** - Invoked from front-end applications via request/response pattern. Use for dashboard APIs, screen interactions, real-time queries. Can interact with UI via formDialog, snackbar, searchTable nodes.
 
 **Gateway Flows** - Run on Fuuz Gateway on-premise. Use for edge device interactions, local printing, device subscriptions.
+
+## State Model
+
+The workflow state passed between nodes contains:
+- **payload** — current data being processed (accessible as `$` in JSONata)
+- **context** — persistent key-value store (set via `setContext`, deep-merged via `mergeContext`, read via `$state.context`)
+- **claims** — authentication claims from the initiating user/system (`$state.claims`)
+- **batches** — tracking info for broadcast/fork parallel execution (`$state.batches`)
+
+The full state object is accessible via the `$state` binding in all data flow JSONata evaluations. See `references/jsonata-bindings.md` for the complete `$state` path reference.
+
+## Common Property Patterns
+
+**Standard Output Port** — Most transition nodes have a `nextNodes` property: `{ "title": "Output", "type": "array", "format": "port" }`. When a node has only this standard port, it is noted as "Standard output port" rather than listed in the properties table.
+
+**JSONata Transform** — `format: "jsonata"` indicates a JSONata expression. In JSONata, `$` refers to the current scope — at the root level this is the input payload, but inside a nested expression (e.g., `$.items.( $.value )`) it shifts to the nested object. Use `$$` to escape back to the root input payload from within a nested scope. The `$state` binding provides access to the full workflow state (e.g., `$state.context`, `$state.claims`).
+
+**Connection** — Integration nodes typically have a `connectionName` or `connectionNameTransform` property referencing a named integration connection (HTTP, ODBC, FTP, etc.).
+
+**Return Errors** — `returnErrors` (boolean): when true, failed requests return `{ error: { statusCode, message, info } }` as payload instead of aborting the flow.
+
+**Degree of Parallelism** — `degreeOfParallelism` (integer, default: 10): when payload is an array, how many parallel requests to execute simultaneously.
+
+**Combination Strategies** — Used by Combine and Collect nodes:
+- `index` — results ordered by branch index (default for payload)
+- `first` (labeled "Last") — uses the last received result (default for context)
+- `merge` — deep merges all results
+
+## Format Glossary
+
+| Format | Meaning |
+|--------|---------|
+| `jsonata` | JSONata expression |
+| `javascript` | JavaScript code block |
+| `graphql` | GraphQL query/mutation string |
+| `port` | Output port connecting to downstream nodes |
+| `sql` | SQL query (used in inputProps mode) |
+
+## Validation Rules
+
+NodeTypes may specify these validation rules:
+- `requireChangedName` — node must be renamed from default
+- `requireInputNode` — must have at least one input connection
+- `requireOutputNode` — must have at least one output connection
+- `requireWalkthrough` — must have a completed walkthrough/note
+- `minimumNoteLength` (integer) — minimum character length for the node note
 
 ## Flow Design Standards
 
@@ -396,6 +442,8 @@ See `references/flow-patterns.md` for complete examples with node configurations
 
 **Broadcasts are dangerous.** The number of requests grows exponentially: `(Number of Records) × (Number of Nodes after Broadcast) = Total Requests`. 10 parts × 3 nodes = 30 requests. 1000 parts × 3 nodes = 3,000 requests. A script-based approach keeps it linear: 3 requests regardless of record count. In most cases, there is another way to solve the problem. Use script nodes that format requests in batch instead.
 
+**Performance Note: Broadcast + Combine** — The Broadcast + Combine pattern is acceptable for small datasets but performs poorly over large datasets. When processing large arrays, prefer using nodes with built-in `degreeOfParallelism` support or handle iteration within a JSONata/JavaScript transform instead.
+
 ### Collect Node
 
 Always use **both** Batch Count and Batch Time together. If you only set Count to 5 and only 3 messages arrive, the node will never emit — it waits indefinitely for the remaining 2. Setting a Batch Time ensures the node flushes partial batches after the timeout.
@@ -496,7 +544,27 @@ Use `.{}` mapping (no square brackets) — JSONata produces the array naturally 
 
 ## Node Reference
 
-Read `references/node-catalog.md` for complete node types and configurations. Key categories:
+Read `references/node-catalog.md` for complete node types and configurations.
+
+### Node Categories
+
+| Category | Count | Description |
+|----------|-------|-------------|
+| Conditionals | 4 | Conditional routing and filtering |
+| Context | 3 | Workflow context manipulation |
+| Debugging | 2 | Logging and echo for development |
+| Device Gateway | 5 | Device function execution and printing |
+| Events | 6 | Event sources and pub/sub |
+| Flow Control | 10 | Parallel execution, delays, error handling |
+| Fuuz | 9 | Platform queries, mutations, documents |
+| Integration | 27 | External system connectors |
+| Notification | 2 | Push notification send/receive |
+| Scripts | 5 | Custom transforms (JSONata, JS, saved) |
+| Transformation | 8 | Data format conversion and array operations |
+| Validation | 1 | Schema validation |
+
+### Key Node Types by Function
+
 - **Triggers**: schedule, dataChanges, request, webhook
 - **Data**: query, mutate, queryFile
 - **Transform**: transform (JSONata), javascriptTransform, savedTransformV2
@@ -556,14 +624,14 @@ See `references/jsonata-bindings.md` for complete binding reference and `referen
 
 ### references/
 - `node-catalog.md` - Complete node types with configuration examples
-- `jsonata-bindings.md` - Fuuz custom JSONata functions reference (294+ functions), extended library: navigation, table/form, screen context, utility, array/object, date/time, type checking, string functions
+- `jsonata-bindings.md` - Flow-specific JSONata reference: evaluation context ($state, node result behavior), operators (path, chaining, transform), critical gotchas, common flow patterns, and all platform functions (182+ custom bindings for queries, mutations, joins, moments, EDI, XML, encryption, scheduling, unit conversion)
 - `graphql-patterns.md` - Query/mutation patterns, operators, aggregations
 - `flow-patterns.md` - Flow design philosophy, single-purpose principle, hybrid multi-flow design, flow control patterns, complete flow examples with node-by-node configurations
 - `time-schedule-bindings.md` - Schedule and moment timezone functions
 - `common-pitfalls.md` - **CRITICAL** - Data access patterns, duration handling, JS runtime limitations (.toFixed(), scoping), JSONata error handling, context management, debugging solutions
-- `system-schema.json` - Complete System API GraphQL schema (49k lines - User, Tenant, Role, etc.)
-- `system-seeded-values.md` - All platform seeded values (flow types, connectors, drivers, settings)
-- `visualization-library.md` - Fusion Charts configuration reference for saved visualizations
+- ~~`system-schema.json`~~ - **Moved to standalone `fuuz-system-schema` skill** (158 system models, 2,676 fields). Load that skill when you need system model field definitions.
+- ~~`system-seeded-values.md`~~ - **Located in `fuuz-platform` skill** (`fuuz-platform/references/system-seeded-values.md`). Load fuuz-platform for seeded values.
+- ~~`visualization-library.md`~~ - **Located in `fuuz-platform` skill** (`fuuz-platform/references/visualization-library.md`). Load fuuz-platform for chart configuration.
 
 ### Additional References
 - `references/flow-design-patterns-advanced.md` — Advanced flow patterns: array iteration rules, duration storage, memory wrapping, pre-population, broadcast optimization, structured logging, validation tracking, OEE calculation patterns, telemetry aggregation
@@ -573,7 +641,8 @@ See `references/jsonata-bindings.md` for complete binding reference and `referen
 ### Companion Skills
 - **fuuz-schema** (`fuuz schema/SKILL.md`) — Data model design and Fuuz package generation. Consult when building flows that query or mutate custom data models — the schema skill defines the models, field types, and relationships your flows will interact with.
 - **fuuz-screens** (`fuuz screens/SKILL.md`) — Screen creation and UI design. Consult when building web flows (Screen type) that support dashboards, HMIs, or custom screen actions via `$executeFlow()`.
-- **fuuz-platform** (`fuuz-platform/SKILL.md`) — Shared platform reference. Consult for connector configurations, device driver details, system seeded values, platform glossary, and cross-skill task routing.
+- **fuuz-platform** (`fuuz-platform/SKILL.md`) — Shared platform reference. Consult for connector configurations, device driver details, system seeded values, visualization library, platform glossary, and cross-skill task routing.
+- **fuuz-system-schema** (`fuuz-system-schema/SKILL.md`) — Complete System API GraphQL schema (158 system models, 2,676 fields). Load when you need exact field names/types for system models.
 
 ### Application Schema (Customer-Specific)
 
@@ -585,7 +654,7 @@ See `references/jsonata-bindings.md` for complete binding reference and `referen
 3. Schema should include: data models, field types, relationships, custom fields
 4. Use provided schema to generate accurate queries/mutations for their specific app
 
-**System API schema IS included** (see `references/system-schema.json`) as it's consistent across all Fuuz environments.
+**System API schema** is available in the companion `fuuz-system-schema` skill — load it when you need system model definitions.
 
 ---
 
@@ -604,9 +673,9 @@ See `references/jsonata-bindings.md` for complete binding reference and `referen
 - Critical pitfalls and debugging guide
 
 **Reference Documentation:**
-- System API schema (49k lines)
-- System seeded values reference (2k+ lines)
-- Fusion Charts visualization library reference
+- System API schema (now in fuuz-system-schema skill — 158 models)
+- System seeded values reference (now in fuuz-platform — 2k+ lines)
+- Fusion Charts visualization library reference (now in fuuz-platform)
 - Common pitfalls with solutions
 
 **Platform Knowledge:**
@@ -654,6 +723,29 @@ See `references/jsonata-bindings.md` for complete binding reference and `referen
 - Collect Node (Batch Count + Batch Time requirement)
 - Try/Catch (no catch-port looping)
 - Settings-Driven Configuration pattern
+
+### Version 1.4 (February 26, 2026)
+
+**Training Data Integration** - Incorporated authoritative data-flow-nodes and JSONata training data
+
+**New SKILL.md Sections:**
+- **State Model** — Documented payload, context, claims, and batches as the four components of workflow state passed between nodes
+- **Common Property Patterns** — Standard output port, JSONata transform `$` vs `$$` scope, connection, returnErrors, degreeOfParallelism, combination strategies (index, first, merge)
+- **Format Glossary** — Reference table for property format values (jsonata, javascript, graphql, port, sql)
+- **Validation Rules** — NodeType validation rules (requireChangedName, requireInputNode, requireOutputNode, requireWalkthrough, minimumNoteLength)
+- **Node Category Count Table** — 12 categories with counts totaling 82 node types
+- **Broadcast+Combine Performance Note** — Guidance on when to use Broadcast+Combine vs degreeOfParallelism or in-transform iteration
+
+**jsonata-bindings.md Replaced:**
+- Replaced with flow-specific JSONata reference built from authoritative training data
+- Added Data Flow evaluation context documentation ($state paths, node types and JSONata results table)
+- Added critical gotchas section (12 items including singleton array equivalence, `$[].{}` vs `$.{}`)
+- Added complete operators reference (path operators, chaining `~>`, transform operator `| |`, conditional operators)
+- Added programming constructs (variable binding, lambdas, partial application, regex)
+- Added common flow patterns (null-safe navigation, conditional object construction, array aggregation, GraphQL variable building, time windows)
+- Added all 182+ platform functions organized by category (Core, MFGx App, Joins, Moment, XML, EDI, Encryption, Network, Calendars, Scheduling, Unit Conversion, Semver)
+- Removed screen-specific content ($components, metadata, frontend functions) — flow-only reference
+- Retained custom bindings in JavaScript usage, debug tips, and performance considerations
 
 ### Version 1.3 (February 22, 2026)
 

@@ -189,7 +189,7 @@ These files exist outside the structured `fuuz skills/` directory. They may cont
 - Synced with fuuz-packages v2.1: relationship TRIPLETS (3-part), usable/active distinction, data retention tiers
 - Expanded Critical Rules from 12 → 24
 - Fixed dataModelTypeId: "setup" for ALL lookups (was incorrectly null)
-- Fixed enterpriseId: developer-provided (was hardcoded "mfgx")
+- Fixed enterpriseId: developer-provided (was hardcoded to a specific enterprise)
 - Expanded Output Checklist: lookup/enum, naming convention, inverse relation validation
 
 **`fuuz skills/fuuz screens/SKILL.md`** — v1.0.0 → v1.2.0

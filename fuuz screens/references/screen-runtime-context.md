@@ -35,18 +35,18 @@ Available via `$metadata` in JSONata expressions:
   },
   "user": {
     "id": "ckzzmdqs8000y0jwx2o5qhwmi",
-    "firstName": "Craig",
-    "lastName": "Scott",
+    "firstName": "Jane",
+    "lastName": "Developer",
     "middleName": "",
-    "email": "cscott@mfgx.io",
+    "email": "user@example.com",
     "environments": [
-      { "id": "build", "name": "Build", "url": "https://build.mfgx.fuuz.app" }
+      { "id": "build", "name": "Build", "url": "https://build.yourcompany.fuuz.app" }
     ],
     "accessTypeId": "administrator"
   },
   "tenant": {
-    "id": "fuuzOverflow",
-    "name": "Fuuz Overflow",
+    "id": "exampleTenant",
+    "name": "Example Tenant",
     "tenantTypeId": "custom"
   },
   "userTenants": [
@@ -83,12 +83,12 @@ Available via `$metadata` in JSONata expressions:
     "TimeZone": "America/Detroit"
   },
   "enterprise": {
-    "id": "mfgx",
-    "name": "MFGx",
+    "id": "yourcompany",
+    "name": "Your Company",
     "maintenanceMode": false,
     "platformVersion": "2026.2.0.766",
     "environment": "build",
-    "domain": "build.mfgx.fuuz.app"
+    "domain": "build.yourcompany.fuuz.app"
   },
   "userRoles": []
 }
@@ -210,11 +210,11 @@ Every transform receives a `payload` containing the current row data. Inside tab
     "createdAt": "2026-01-05T16:00:30.920Z",
     "createdByUser": {
       "id": "ckzzmdqs8000y0jwx2o5qhwmi",
-      "firstName": "Craig",
-      "lastName": "Scott",
-      "email": "cscott@mfgx.io"
+      "firstName": "Jane",
+      "lastName": "Developer",
+      "email": "user@example.com"
     },
-    "createdByDisplay": "Craig Scott",
+    "createdByDisplay": "Jane Developer",
     "activeColor": "#2e7d32",
     "activeDisplay": "Active",
     "modeColor": "#757575",

@@ -61,7 +61,7 @@ Generate valid FUUZ platform data model packages (`.fuuz` files) that import wit
 49. **Exported packages have the same 3-file structure** — when a developer exports a package from FUUZ (e.g., after adding roles/policies natively), the exported `.fuuz` file follows the exact same structure: `manifest.json`, `definition.json`, `package-data.json`. This means exported packages can be provided directly to Claude for learning.
 50. **Field order in the `fields` array does not matter** — the order of fields in the model definition's `fields` array has no impact on import or runtime behavior. Convention is to put `id` first, but it's not required.
 51. **Use the GraphQL type name for queries** — when building screens or flows, use the PascalCase model name as the GraphQL type (e.g., `BatchRecipe`, `EquipmentUnit`). Queries use the camelCase plural for list queries (e.g., `batchRecipes { ... }`) and camelCase singular for single-record queries (e.g., `batchRecipe(id: "...") { ... }`).
-52. **`enterpriseId` and `environmentId` are tenant-specific** — packages will have different `enterpriseId` and `environmentId` depending on the target tenant. The developer MUST provide the correct values for their environment. Do not assume `"mfgx"` / `"build"` — always ask.
+52. **`enterpriseId` and `environmentId` are tenant-specific** — packages will have different `enterpriseId` and `environmentId` depending on the target tenant. The developer MUST provide the correct values for their environment. Do not assume any specific values — always ask.
 53. **Packages can be rolled back** — developers can uninstall/delete packages that were imported. This is particularly useful in the build environment when iterating. If a package import causes issues, the developer can roll it back and re-import a corrected version.
 54. **Flow schedules are configured natively in FUUZ** — do NOT attempt to configure data flow schedules in packages. Suggest to the developer: "Configure flow schedules using the Data Flow Schedules screen in FUUZ." Schedule configuration is a runtime concern, not a package concern.
 55. **Keep skills split by concern** — `fuuz-schema` handles data model design (what fields, relationships, constraints). `fuuz-packages` handles package generation (producing valid JSON that imports). Not every interaction requires package generation — sometimes the developer only needs model design guidance.
@@ -114,7 +114,7 @@ Only include the 3 JSON files. No subdirectories, no extra files.
 | Field | Value | Why |
 |-------|-------|-----|
 | `applicationPublisherId` | `"fuuz"` | `null` causes validation errors |
-| `enterpriseId` | **Developer must provide** | Varies by tenant — ask the developer for the correct value (e.g., `"mfgx"`) |
+| `enterpriseId` | **Developer must provide** | Varies by tenant — ask the developer for the correct value (e.g., `"yourcompany"`) |
 | `environmentId` | **Developer must provide** | Varies by tenant — ask the developer for the correct value (e.g., `"build"`) |
 | `dependencies` | `{}` | Listing dependencies triggers a tenantId filter bug in the installer |
 | `platformVersion` | Current platform version | Must match target environment |

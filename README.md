@@ -1,6 +1,6 @@
 # FUUZ Skills
 
-Claude Code skills for building applications on the [FUUZ](https://fuuz.app) MES platform — covering data modeling, package generation, screen design, data flows, GraphQL/JSONata, industrial operations, and ML telemetry.
+Claude Code skills for building applications on the [FUUZ](https://fuuz.app) Industrial Intelligence Platform — covering data modeling, package generation, screen design, data flows, GraphQL, JSONata, documents, industrial operations, ML telemetry, and more.
 
 ## What Are FUUZ Skills?
 
@@ -10,56 +10,93 @@ They're designed for **FUUZ developers, partners, and customers** who want Claud
 
 ## Skills
 
+### Fuuz Platform Skills (How to Build on Fuuz)
+
 | Skill | Version | Description |
 |-------|---------|-------------|
-| **fuuz-packages** | v2.1.1 | FUUZ package generation — 71 golden rules for building valid `manifest.json`, `definition.json`, and `package-data.json` files. Covers ISA-88/ISA-95 patterns, deployment lifecycle, and enterprise tenant architecture. |
-| **fuuz-schema** | v2.0.0 | Data model design — relationship TRIPLETS, usable/active patterns, 24 critical rules, data retention tiers, field metadata shapes, and naming conventions. |
-| **fuuz-screens** | v1.3.0 | Screen builder — MainFormContainer patterns, action pipelines, OEE dashboards, Stimulsoft reports, ISA-101 compliance, and component library reference. |
-| **fuuz-flows** | v1.3.0 | Data flow design — 50+ node types, webhook configuration, JSONata iteration rules, 5 manufacturing flow patterns, and flow documentation standards. |
-| **fuuz-platform** | v1.5.0 | Platform fundamentals — 294 JSONata bindings, GraphQL query/mutation patterns, integration landscape (500+ systems), and Script Editor runtime reference. |
-| **fuuz-industrial-ops** | v1.2.0 | Industrial operations — OPC UA quality codes, OEE/TEEP/MTBF/MTTR formulas, ideal cycle time fallback, UNS patterns, and alarm management. |
-| **fuuz-ml-telemetry** | v1.0.0 | ML and telemetry — algorithms, telemetry collection patterns, data models, and validation checklists. |
+| **fuuz-platform** | v1.6.0 | Platform fundamentals — architecture, glossary, JSONata bindings, integration landscape, cross-skill routing. |
+| **fuuz-schema** | v2.0.0 | Data model design — relationship triplets, field types, naming conventions, data retention tiers, 24 critical rules. |
+| **fuuz-packages** | v2.1.1 | Package generation — 71 golden rules for building valid `.fuuz` package files (manifest, definition, package-data). |
+| **fuuz-flows** | v1.4.0 | Data flow design — 50+ node types with full per-node specs, JSONata/JS transforms, flow patterns. |
+| **fuuz-screens** | v1.4.0 | Screen builder — 75 element types across 5 categories with per-element specs, Craft.js patterns, action pipelines. |
+| **fuuz-graphql** | v1.0.0 | **NEW** — GraphQL essentials — query syntax, mutations, aggregations, where operators, edges/node pattern, flow and screen patterns. |
+| **fuuz-documents** | v1.0.0 | **NEW** — Document designer — Stimulsoft Reports integration, band types, expressions, manufacturing document patterns. |
+| **fuuz-mcp-tools** | v1.2.0 | MCP tool patterns — building data flows as MCP tools for LLM agents, context window optimization. |
+| **fuuz-system-schema** | v1.1.0 | System schema reference — 158 system model definitions with 2,676 fields. |
+
+### Domain Knowledge Skills (Industry Patterns)
+
+| Skill | Version | Description |
+|-------|---------|-------------|
+| **fuuz-industrial-ops** | v1.2.0 | Industrial operations — UNS, alarm management, OEE/ISO 22400, workcenter states, ERP integration. |
+| **fuuz-ml-telemetry** | v1.1.0 | ML and telemetry — EWMA baselines, Z-score anomaly detection, Pearson correlation, forecast pipelines. |
+| **fuuz-wms** | v1.0.0 | **NEW** — WMS reference schema — 37 models, 556 fields, 124 relationships across 7 warehouse modules. |
+
+### Business Skills
+
+| Skill | Version | Description |
+|-------|---------|-------------|
+| **fuuz-rfp-skill** | v1.0.0 | RFP/RFI responder — security questionnaires, compliance assessments, capability matrices. |
 
 ## Repository Structure
 
 ```
 fuuz-skills/
 ├── README.md
-├── SKILLS_VERSION_MANIFEST.md    # Version tracking and change log
+├── SKILLS_VERSION_MANIFEST.md
 ├── .gitignore
 │
-├── fuuz-packages/                # Package generation skill
-│   ├── SKILL.md                  #   Deployed skill (with YAML frontmatter)
-│   ├── fuuz-package-creator-skill.md  #   Source skill (71 golden rules)
-│   └── references/
-│       └── package-deployment-lifecycle.md
+├── fuuz-platform/                # Platform fundamentals
+│   ├── SKILL.md
+│   └── references/               #   22 reference files (incl. JSONata, connectors, integration)
 │
-├── fuuz schema/                  # Data model design skill
+├── fuuz schema/                  # Data model design
 │   ├── SKILL.md
 │   └── references/               #   8 reference files
 │
-├── fuuz screens/                 # Screen builder skill
+├── fuuz-packages/                # Package generation
 │   ├── SKILL.md
-│   ├── fuuz-screens-v1.md
-│   └── references/               #   11 reference files
+│   └── references/
 │
-├── fuuz flows/                   # Data flow design skill
+├── fuuz flows/                   # Data flow design
 │   ├── SKILL.md
-│   └── references/               #   12 reference files
+│   └── references/               #   22 reference files (incl. per-node specs)
 │
-├── fuuz-platform/                # Platform fundamentals skill
+├── fuuz screens/                 # Screen builder
 │   ├── SKILL.md
-│   └── references/               #   10 reference files
+│   └── references/               #   16 reference files (incl. per-element specs)
 │
-├── fuuz-industrial-ops/          # Industrial operations skill
+├── fuuz-graphql/                 # GraphQL essentials (NEW)
+│   ├── SKILL.md
+│   └── references/               #   3 reference files
+│
+├── fuuz-documents/               # Document designer (NEW)
+│   ├── SKILL.md
+│   └── references/               #   1 reference file (Stimulsoft)
+│
+├── fuuz-mcp-tools/               # MCP tool patterns
+│   ├── SKILL.md
+│   └── references/               #   3 reference files
+│
+├── fuuz-system-schema/           # System schema reference
+│   ├── SKILL.md
+│   └── references/               #   2 reference files
+│
+├── fuuz-industrial-ops/          # Industrial operations (domain)
 │   ├── SKILL.md
 │   └── references/               #   5 reference files
 │
-├── fuuz-ml-telemetry/            # ML and telemetry skill
+├── fuuz-ml-telemetry/            # ML and telemetry (domain)
 │   ├── SKILL.md
 │   └── references/               #   5 reference files
 │
-└── *.skill                       # 7 packaged skill archives (ZIP)
+├── fuuz-wms/                     # WMS reference schema (NEW, domain)
+│   ├── SKILL.md
+│   └── references/               #   1 reference file
+│
+├── NewTrainingData/              # Incoming training data staging area
+│
+└── *.skill                       # Packaged skill archives (ZIP)
 ```
 
 ## Installation
@@ -93,7 +130,7 @@ See [`SKILLS_VERSION_MANIFEST.md`](SKILLS_VERSION_MANIFEST.md) for the complete 
 
 ## About FUUZ
 
-[FUUZ](https://fuuz.app) is a Industrial Intelligence Platform that supports building Manufacturing Execution System (MES) supporting ISA-88 batch processing, ISA-95 enterprise integration, OEE tracking, and industrial IoT — built for manufacturers who need flexible, configurable production management. With Fuuz you can build and deploy apps from the edge to cloud, for any operational requirement.
+[FUUZ](https://fuuz.app) is an Industrial Intelligence Platform that supports building Manufacturing Execution Systems (MES) supporting ISA-88 batch processing, ISA-95 enterprise integration, OEE tracking, and industrial IoT — built for manufacturers who need flexible, configurable production management. With Fuuz you can build and deploy apps from the edge to cloud, for any operational requirement.
 
 ## Resources
 
@@ -102,4 +139,4 @@ See [`SKILLS_VERSION_MANIFEST.md`](SKILLS_VERSION_MANIFEST.md) for the complete 
 | **Free Trial** | [fuuz.app](https://fuuz.app) | Request your free trial of FUUZ |
 | **Get Started** | [getstarted.fuuz.com](https://getstarted.fuuz.com) | Introductory videos and walkthroughs to get up and running |
 | **FUUZ Academy** | [academy.fuuz.com](https://academy.fuuz.com) | Online LMS with structured courses and certifications |
-| **Support & Community** | [support.fuuz.com](https://support.fuuz.com) | Knowledge base, documentation, and customer community |
+| **Support & Community** | [support.fuuz.com](https://support.fuuz.com) | Knowledge base, documentation, and community |

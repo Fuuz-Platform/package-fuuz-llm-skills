@@ -1,6 +1,6 @@
 # Fuuz Cross-Skill Index
 
-Decision guide for determining which Fuuz skill(s) to use for any given task. This index covers all four skills in the Fuuz accelerator suite.
+Decision guide for determining which Fuuz skill(s) to use for any given task. This index covers all skills in the Fuuz accelerator suite.
 
 ---
 
@@ -12,6 +12,11 @@ Decision guide for determining which Fuuz skill(s) to use for any given task. Th
 | **fuuz-flows** | Build server-side data flow logic | Flow JSON (node configurations, transforms) |
 | **fuuz-screens** | Create user interface screens | Screen JSON (component tree, design) |
 | **fuuz-platform** | Shared platform reference material | Reference documentation (no generated artifacts) |
+| **fuuz-system-schema** | System API GraphQL schema reference | Reference (158 system models, 2,676 fields) |
+| **fuuz-mcp-tools** | Build MCP tools as Fuuz data flows | Flow JSON with mcpToolConfiguration |
+| **fuuz-packages** | Fuuz package creation and deployment | Fuuz package JSON |
+| **fuuz-industrial-ops** | Industrial operations domain knowledge | Reference documentation |
+| **fuuz-ml-telemetry** | ML/telemetry/IoT patterns | Reference documentation |
 
 ---
 
@@ -30,13 +35,15 @@ Decision guide for determining which Fuuz skill(s) to use for any given task. Th
 | Create a dashboard screen | **fuuz-screens** | fuuz-flows (for page load flows) |
 | Create an HMI / control panel | **fuuz-screens** | fuuz-flows (for real-time data flows) |
 | Create a mobile app screen | **fuuz-screens** | fuuz-flows (for form submission flows) |
-| Build a complete application | **All four** | Schema → Flows → Screens, Platform for reference |
+| Build a complete application | **All core skills** | Schema → Flows → Screens, Platform for reference |
 | Look up a connector or device driver | **fuuz-platform** | — |
 | Look up system seeded values | **fuuz-platform** | — |
 | Configure a FusionCharts visualization | **fuuz-platform** | fuuz-screens (for Chart/Visualization components) |
 | Understand platform architecture | **fuuz-platform** | — |
 | Look up field types for a model | **fuuz-schema** | — |
 | Understand GraphQL query patterns | **fuuz-flows** (backend) or **fuuz-screens** (frontend) | — |
+| Look up system model fields (User, Connection, etc.) | **fuuz-system-schema** | — |
+| Build an MCP tool as a Fuuz data flow | **fuuz-mcp-tools** | fuuz-flows (for node patterns) |
 
 ### "What stage am I at?"
 

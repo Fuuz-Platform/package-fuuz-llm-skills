@@ -1,6 +1,6 @@
 # Fuuz Connectors Reference
 
-Quick reference for all 44 built-in connectors available in the Fuuz Industrial Operations Platform. Connectors enable integration with external systems, APIs, and services from within Fuuz data flows.
+Quick reference for all 42 built-in connectors available in the Fuuz Industrial Operations Platform. For detailed inbound/outbound schemas, see `integration-service-reference.md`. Connectors enable integration with external systems, APIs, and services from within Fuuz data flows.
 
 > **Usage:** Connectors are configured in **Configuration → Connectors** in the Fuuz platform UI, then used in flows via `integrateV2` nodes (backend flows) or `$integrate()` bindings (screen flows).
 
