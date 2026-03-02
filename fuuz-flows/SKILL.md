@@ -1,6 +1,6 @@
 ---
-name: fuuz-flows-v1
-description: Build data flows for the Fuuz Industrial Operations platform (fuuz.com). Use when requests mention "fuuz flow", "data flow", "flow", "web flow", "backend flow", "gateway flow", "rfc", "remote function call", "fuuz api", JSONata expressions, or industrial automation workflows (OEE calculation, warehouse logic, external API integration, telemetry aggregation, production tracking). Covers JSONata and JavaScript transforms, GraphQL queries/mutations, flow architecture, node configuration, and common patterns for event-driven and scheduled automation.
+name: fuuz-flows
+description: "Build data flows for the Fuuz Industrial Operations platform (fuuz.com). Trigger on fuuz flow, data flow, flow design, web flow, backend flow, gateway flow, rfc, remote function call, or industrial automation workflows (OEE calculation, warehouse logic, external API integration, telemetry aggregation, production tracking). Covers flow architecture, node configuration (82 node types across 12 categories), state model (payload, context, claims, batches), flow patterns (ETL, reactive, dashboard API, batch fan-out), concurrency protection, naming conventions, and debugging. Cross-references fuuz-graphql for query/mutation syntax, fuuz-jsonata for expressions, fuuz-javascript for script nodes."
 ---
 
 # Fuuz Data Flow Builder
@@ -27,7 +27,7 @@ The workflow state passed between nodes contains:
 - **claims** — authentication claims from the initiating user/system (`$state.claims`)
 - **batches** — tracking info for broadcast/fork parallel execution (`$state.batches`)
 
-The full state object is accessible via the `$state` binding in all data flow JSONata evaluations. See `references/jsonata-bindings.md` for the complete `$state` path reference.
+The full state object is accessible via the `$state` binding in all data flow JSONata evaluations. See the **fuuz-jsonata** skill for the complete JSONata binding reference including `$state` paths.
 
 ## Common Property Patterns
 
@@ -75,94 +75,47 @@ NodeTypes may specify these validation rules:
 
 ## Fuuz API Architecture
 
-Fuuz provides **two GraphQL APIs**:
+> **See the `fuuz-graphql` skill** for complete GraphQL query syntax, mutation patterns, filtering, pagination, relationship traversal, and aggregations.
 
-**Application API** - App-specific data models (production logs, OEE, telemetry, work orders, assets, data points)
-**System API** - Platform models (tenants, enterprises, users, roles, permissions, groups)
+Fuuz provides **two GraphQL APIs** — specify which in query/mutate nodes via `"api": "application"` or `"api": "system"`:
+- **Application API** — App-specific data models (production logs, OEE, work orders, assets)
+- **System API** — Platform models (tenants, enterprises, users, roles, permissions)
 
-Specify which API in query/mutate nodes: `"api": "application"` or `"api": "system"`
+## Language Selection for Transforms
 
-## JSONata vs JavaScript Decision
+> **See the `fuuz-jsonata` skill** for complete JSONata syntax, 182+ platform bindings, and expression patterns.
+> **See the `fuuz-javascript` skill** for JavaScript sandbox restrictions, script node types, and code patterns.
 
-Use **JSONata** for:
-- Simple data transformations and restructuring
-- Extracting fields from payloads
-- Time/date calculations with `$moment()`
-- Filtering and mapping arrays
-- Conditional logic (when/unless nodes)
-- Building GraphQL variables
+**Default to JSONata** for data transformation, filtering, date/time operations, and query variable construction. Use **JavaScript** only when JSONata cannot express the logic (complex algorithms, stateful processing, regex complexity, try/catch error handling).
 
-Use **JavaScript** for:
-- Complex business logic with loops and side effects
-- Heavy calculations or algorithms
-- State management requiring multiple variables
-- Simulation or data generation
-- When you need standard JavaScript libraries
+**Important**: All Fuuz JSONata custom bindings are also accessible in JavaScript transforms. Use the same syntax: `$moment()`, `$schedule()`, `$numeral()` etc.
 
-**Important**: All Fuuz JSONata custom bindings are also accessible in JavaScript transforms since Fuuz runs on Node.js. Use the same syntax: `$moment()`, `$schedule()`, `$numeral()` etc.
+## Critical JSONata Rules for Flows
 
-### JavaScript Runtime Limitations (CRITICAL)
+> **See the `fuuz-jsonata` skill** for complete JSONata syntax rules, operator reference, and all platform bindings.
 
-The Fuuz JS runtime (`javascriptTransform` nodes) is a restricted sandbox with hard failures:
-
-**`.toFixed()` Is Not Supported** — throws `cannot read properties of toFixed`. Always use `Math.round()`:
-```javascript
-// ❌ FAILS
-var rounded = someNumber.toFixed(4);
-// ✅ WORKS
-var rounded = Math.round(someNumber * 10000) / 10000;
-```
-
-**Variable Scoping Unreliable in Loops** — Variables declared with `var` inside loop bodies may silently fail. Inline expressions directly:
-```javascript
-// ❌ UNRELIABLE
-for (var i = 0; i < results.length; i++) {
-  var roundedR = Math.round(results[i].r * 10000) / 10000;
-  insights.push({ value: roundedR });
-}
-// ✅ RELIABLE
-for (var i = 0; i < results.length; i++) {
-  insights.push({ value: Math.round(results[i].r * 10000) / 10000 });
-}
-```
-
-**`'use strict';` should always be at the top of JS scripts.**
-
-**Works:** `'use strict'`, `var`, `function` declarations, `Math.*`, `JSON.stringify/parse`, `Object.keys()`, `Array.isArray()`, `.push()`, `.slice()`, `parseFloat()`, `parseInt()`, `new Date().toISOString()`, `for/while/if/else/switch`
-
-**Does NOT work:** `.toFixed()`, `let`/`const`, arrow functions, template literals, destructuring, spread operator, `Promise`/`async/await`, `require()`
-
-## Critical JSONata Context Behavior
+### Context Scope ($ vs $$)
 
 In JSONata, `$` refers to the **current context** which changes in chained operations:
 
 ```jsonata
-$; /* Root payload at top level */
-
 $.data.(
   $;   /* NOW refers to each element in $.data array */
   $$;  /* ALWAYS refers to root payload */
 );
-
-$moment($);      /* $ is root payload */
-$moment().add($); /* BAD! $ is now undefined due to context shift */
-$moment().add($$); /* GOOD! $$ is always root */
-
-$components.Screen.fn.setContext($); /* BAD! $ shifted */
-( $data := $; $components.Screen.fn.setContext($data) ); /* GOOD! */
 ```
 
-**Rule**: When calling functions that chain with `.`, capture the payload first: `$data := $` then use `$data` or use `$$` for root.
+**Rule**: When calling chained functions, capture the payload first: `$data := $` then use `$data`, or use `$$` for root.
 
-### Critical JSONata Iteration Rule
+### Array Iteration Rule
 
 **`$[].{}` produces an array of objects (CORRECT). `$.{}` collects values into arrays per field (WRONG).**
 
 ```jsonata
-/* CORRECT — produces [{a:1,b:2}, {a:3,b:4}] */
+/* CORRECT — [{a:1,b:2}, {a:3,b:4}] */
 $[].{ "a": fieldA, "b": fieldB }
 
-/* WRONG — produces { "a": [1,3], "b": [2,4] } */
+/* WRONG — { "a": [1,3], "b": [2,4] } */
 $.{ "a": fieldA, "b": fieldB }
 ```
 
@@ -484,9 +437,13 @@ This makes error logs actionable — operators can immediately identify which re
 - **$integrate() is highly discouraged** in transforms — it will likely be deprecated
 - Use native connector nodes over HTTP nodes whenever possible
 
-## GraphQL API Usage
+## GraphQL in Flow Nodes
 
-All queries use Relay-style connections:
+> **See the `fuuz-graphql` skill** for complete GraphQL API documentation, common query patterns, and API Explorer usage.
+
+**IMPORTANT:** Flow query/mutate nodes use **Relay-style connection syntax** with underscore-prefix operators (`_eq`, `_in`, `_not`). This differs from the direct syntax (`equals`, `in`, `not`) shown in the API Explorer and documented in the `fuuz-graphql` skill.
+
+All flow queries use Relay-style connections:
 ```graphql
 query GetData($where: ModelWhereInput) {
   model(where: $where) {
@@ -507,9 +464,7 @@ Mutations require payload arrays:
 { "payload": [{ "where": { "id": "x" }, "update": { "field": "value" } }] }  /* Update */
 ```
 
-See `references/graphql-patterns.md` for operators, aggregations, duration fields, multi-query patterns.
-
-### GraphQL Mutation Patterns
+### Flow Mutation Patterns
 
 **Delete Mutations** use `payload` array with individual `where` wrappers:
 ```graphql
@@ -575,19 +530,14 @@ Read `references/node-catalog.md` for complete node types and configurations.
 - **Gateway**: devicePrintFile, deviceSubscription, executeDeviceFunction
 - **Integration**: integrateV2, awsLambda, various ERP/external systems
 
-## JSONata Custom Bindings
+## JSONata & JavaScript References
 
-Fuuz extends JSONata with hundreds of custom bindings. Key functions:
-- `$moment()`, `$momentTz()` - Date/time with timezone support
-- `$schedule(id)`, `$scheduleGroup(id)` - Production scheduling
-- `$coalesce([...])` - First non-null value
-- `$isNilOrEmpty($)`, `$isNotNilOrEmpty($)` - Null checks
-- `$state.context` - Access flow state
-- Duration, aggregation, and data model helpers
+> **See the `fuuz-jsonata` skill** for the complete JSONata binding reference (182+ bindings), evaluation context, and expression patterns.
+> **See the `fuuz-javascript` skill** for JavaScript sandbox restrictions and script node patterns.
 
-See `references/jsonata-bindings.md` for complete binding reference and `references/time-schedule-bindings.md` for schedule-specific functions.
+The `fuuz-jsonata` skill's `references/` directory contains `jsonata-bindings.md` (full binding signatures) and `time-schedule-bindings.md` (schedule/moment functions).
 
-### Context Management Best Practices
+## Context Management Best Practices
 
 - **Always** label context with a wrapping variable: use `{"plexResponse": $}` instead of just `$`
 - Never set or merge context with a transform that is just `$`
@@ -615,8 +565,8 @@ See `references/jsonata-bindings.md` for complete binding reference and `referen
 13. **Payload Arrays**: Even single mutations require array wrap
 14. **For adding descriptions**: Export flow JSON and provide to Claude for contextual description generation
 15. **Store config in Settings, not hardcoded** — Query application Settings via System API and parse with defaults. Enables runtime tuning without redeploying.
-16. **JS Runtime Restrictions** — No `.toFixed()` (use `Math.round()`), no `let`/`const` (use `var`), no arrow functions, no template literals. See `common-pitfalls.md` for full list.
-17. **Inline expressions in loops** — Variable scoping is unreliable inside `for` loops in the Fuuz JS runtime. Inline single-use values instead of assigning to variables.
+16. **JS Runtime Restrictions** — See the `fuuz-javascript` skill for complete sandbox restrictions. Key: no `.toFixed()`, no `let`/`const`, no arrow functions, no template literals. Also see `common-pitfalls.md`.
+17. **Inline expressions in loops** — See the `fuuz-javascript` skill. Variable scoping is unreliable inside `for` loops in the Fuuz JS runtime; inline single-use values.
 18. **setContext vs mergeContext** — `setContext` replaces context entirely; `mergeContext` adds to it. Use `mergeContext` when you need data from a prior query alongside new pipe data.
 19. **Guard empty mutations** — Always add `unless` guard nodes before mutations: `$count($.model.edges.node) = 0`. Prevents empty payload errors.
 
@@ -624,10 +574,10 @@ See `references/jsonata-bindings.md` for complete binding reference and `referen
 
 ### references/
 - `node-catalog.md` - Complete node types with configuration examples
-- `jsonata-bindings.md` - Flow-specific JSONata reference: evaluation context ($state, node result behavior), operators (path, chaining, transform), critical gotchas, common flow patterns, and all platform functions (182+ custom bindings for queries, mutations, joins, moments, EDI, XML, encryption, scheduling, unit conversion)
-- `graphql-patterns.md` - Query/mutation patterns, operators, aggregations
+- ~~`jsonata-bindings.md`~~ — **Moved to `fuuz-jsonata` skill** (`fuuz-jsonata/references/jsonata-bindings.md`). Load fuuz-jsonata for JSONata binding reference.
+- ~~`graphql-patterns.md`~~ — **Removed.** See the `fuuz-graphql` skill for GraphQL query and mutation patterns.
 - `flow-patterns.md` - Flow design philosophy, single-purpose principle, hybrid multi-flow design, flow control patterns, complete flow examples with node-by-node configurations
-- `time-schedule-bindings.md` - Schedule and moment timezone functions
+- ~~`time-schedule-bindings.md`~~ — **Moved to `fuuz-jsonata` skill** (`fuuz-jsonata/references/time-schedule-bindings.md`). Load fuuz-jsonata for schedule-specific functions.
 - `common-pitfalls.md` - **CRITICAL** - Data access patterns, duration handling, JS runtime limitations (.toFixed(), scoping), JSONata error handling, context management, debugging solutions
 - ~~`system-schema.json`~~ - **Moved to standalone `fuuz-system-schema` skill** (158 system models, 2,676 fields). Load that skill when you need system model field definitions.
 - ~~`system-seeded-values.md`~~ - **Located in `fuuz-platform` skill** (`fuuz-platform/references/system-seeded-values.md`). Load fuuz-platform for seeded values.
@@ -639,8 +589,11 @@ See `references/jsonata-bindings.md` for complete binding reference and `referen
 - `references/flow-essentials.md` — Quick reference: node categories, webhook URL format and configuration, 5 manufacturing flow patterns (OEE calculation, inventory move webhook, asset lifecycle, fan-out integration, planned schedule generation), timezone handling rules, flow JSON structure, flow documentation standard
 
 ### Companion Skills
-- **fuuz-schema** (`fuuz schema/SKILL.md`) — Data model design and Fuuz package generation. Consult when building flows that query or mutate custom data models — the schema skill defines the models, field types, and relationships your flows will interact with.
-- **fuuz-screens** (`fuuz screens/SKILL.md`) — Screen creation and UI design. Consult when building web flows (Screen type) that support dashboards, HMIs, or custom screen actions via `$executeFlow()`.
+- **fuuz-graphql** (`fuuz-graphql/SKILL.md`) — GraphQL query/mutation syntax, API Explorer usage, filtering, pagination, relationship traversal, and aggregations. Consult when building query/mutate nodes or using the API Explorer.
+- **fuuz-jsonata** (`fuuz-jsonata/SKILL.md`) — JSONata expression language reference with 182+ platform bindings. Consult for transform expressions, syntax rules, and custom binding documentation.
+- **fuuz-javascript** (`fuuz-javascript/SKILL.md`) — JavaScript sandbox restrictions and script node patterns. Consult when writing JavaScript transform nodes.
+- **fuuz-schema** (`fuuz-schema/SKILL.md`) — Data model design and Fuuz package generation. Consult when building flows that query or mutate custom data models — the schema skill defines the models, field types, and relationships your flows will interact with.
+- **fuuz-screens** (`fuuz-screens/SKILL.md`) — Screen creation and UI design. Consult when building web flows (Screen type) that support dashboards, HMIs, or custom screen actions via `$executeFlow()`.
 - **fuuz-platform** (`fuuz-platform/SKILL.md`) — Shared platform reference. Consult for connector configurations, device driver details, system seeded values, visualization library, platform glossary, and cross-skill task routing.
 - **fuuz-system-schema** (`fuuz-system-schema/SKILL.md`) — Complete System API GraphQL schema (158 system models, 2,676 fields). Load when you need exact field names/types for system models.
 
