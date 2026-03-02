@@ -7,8 +7,6 @@ fuuz-rfp-security.skill
 fuuz-rfp-skill.skill
 Fuuz RFP Skill Readme.md
 
-# Build artifacts (generated from source directories)
-*.skill
 
 # Staging area for new training data (processed files get moved to skill references)
 NewTrainingData/
