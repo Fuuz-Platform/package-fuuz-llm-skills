@@ -1,18 +1,22 @@
 ---
 name: fuuz-graphql
-description: >
-  Write, debug, and optimize GraphQL queries and mutations for the Fuuz Industrial Operations Platform (fuuz.com).
-  Trigger this skill whenever the user mentions Fuuz GraphQL, Fuuz queries, Fuuz mutations, Fuuz API Explorer,
-  auto-generated APIs, data model queries, CRUD operations in Fuuz, schema-to-API generation, GraphQL subscriptions
-  in Fuuz, or needs help constructing queries for work orders, production history, inventory, assets, OEE data,
-  workcenters, or any other Fuuz data model. Also trigger when the user references the Fuuz Application API or
-  System API, filtering with where clauses, ordering with orderBy, pagination with take/skip, or relationship
-  traversal in Fuuz GraphQL.
+description: "Write, debug, and optimize GraphQL queries and mutations for the Fuuz Industrial Operations Platform (fuuz.com). Trigger this skill whenever the user mentions Fuuz GraphQL, Fuuz queries, Fuuz mutations, Fuuz API Explorer, auto-generated APIs, data model queries, CRUD operations in Fuuz, schema-to-API generation, GraphQL subscriptions in Fuuz, or needs help constructing queries for work orders, production history, inventory, assets, OEE data, workcenters, or any other Fuuz data model. Also trigger when the user references the Fuuz Application API or System API, filtering with where clauses, ordering with orderBy, pagination with take/skip, or relationship traversal in Fuuz GraphQL."
 ---
 
 # Fuuz GraphQL Skill
 
 > **Purpose:** Guide Claude in writing GraphQL queries and mutations for the Fuuz Industrial Operations Platform. Fuuz auto-generates a complete GraphQL API layer from its Schema Designer, meaning every data model immediately gets full CRUD operations accessible via GraphQL.
+
+### Two Syntax Variants in Fuuz
+
+**IMPORTANT:** Fuuz uses two distinct GraphQL syntax styles depending on context:
+
+| Context | Syntax Style | Filter Operators | OrderBy | Connections |
+|---------|-------------|------------------|---------|-------------|
+| **API Explorer, Screens, JSONata `$query()`** | Direct | `equals`, `in`, `not`, `gt`, `contains` | `[{ field: direction }]` | Direct results |
+| **Flow Query/Mutate Node configs** | Relay-style | `_eq`, `_in`, `_not`, `_gt`, `_contains` | `[{ "field": "name", "direction": "DESC" }]` | `edges { node { } }` |
+
+This skill documents the **Direct syntax** used in the API Explorer, screens, and JSONata `$query()`/`$mutate()` calls. For **Relay-style flow syntax** used in flow query/mutate node configurations, see the **fuuz-flows** skill's "GraphQL in Flow Nodes" section.
 
 ## 1. How Fuuz GraphQL Works
 
@@ -502,3 +506,11 @@ Use subscriptions for live monitoring dashboards. For periodic data refresh (OEE
 - **Never use string concatenation to build queries** — Use proper variable binding
 - **Never assume field names** — Check the Schema Designer or API Explorer for exact names
 - **Never mutate without a `where` clause** — Updates and deletes require explicit targeting
+
+## 9. Cross-References
+
+- **fuuz-flows** — How query/mutate nodes use Relay-style GraphQL syntax in flow configurations, including mutation payload arrays, Relay connection traversal (`edges.node`), and flow-specific operators (`_eq`, `_in`, `_not`)
+- **fuuz-jsonata** — JSONata expressions that construct GraphQL variables and invoke queries via `$query()`, `$mutate()`, and `$executeSavedQuery()`
+- **fuuz-screens** — How screen elements bind to GraphQL queries for tables, forms, and data display
+- **fuuz-schema** — Data model design that drives the auto-generated GraphQL API
+- **fuuz-system-schema** — System API GraphQL schema (158 models) for platform queries

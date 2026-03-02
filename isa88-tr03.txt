@@ -1,0 +1,586 @@
+                                                                                                TECHNICAL REPORT
+
+                                                                   ISA­TR88.0.03­1996
+
+                                                                   Possible Recipe Procedure
+                                                                   Presentation Formats
+
+                                                                                                 NOTICE OF COPYRIGHT
+                                                                   This is a copyrighted document and may not be copied or distributed in any
+                                                                   form or manner without the permission of ISA. This copy of the document was
+                                                                   made for the sole use of the person to whom ISA provided it and is subject to
+                                                                   the restrictions stated in ISA's license to that person. It may not be provided to
+                                                                   any other person in print, electronic, or any other form. Violations of ISA's
+                                                                   copyright will be prosecuted to the fullest extent of the law and may result in
+                                                                   substantial civil and criminal penalties.
+
+                                                                   Approved 20 December 1996
+
+                                                               TM
+
+ISA­The Instrumentation,
+      Systems, and
+
+  Automation Society
+ISA­TR88.0.03­1996, Possible Recipe Procedure Presentation Formats
+
+ISBN: 1-55617-622-8
+
+Copyright © 1996 by the Instrument Society of America. All rights reserved. Printed in the United
+States of America. No part of this publication may be reproduced, stored in a retrieval system, or
+transmitted in any form or by any means (electronic, mechanical, photocopying, recording, or
+otherwise), without the prior written permission of the publisher.
+
+ISA
+67 Alexander Drive
+P.O. Box 12277
+Research Triangle Park, North Carolina 27709
+Preface
+
+This preface, as well as all footnotes and annexes, is included for informational purposes and is
+not part of ISA-TR88.0.03-1996.
+
+This Technical Report has been prepared as part of the service of ISA, the international society
+for measurement and control, toward a goal of uniformity in the field of instrumentation. To be of
+real value, this document should not be static, but should be subject to periodic review. Toward
+this end, the Society welcomes all comments and criticisms, and asks that they be addressed to
+the Secretary, Standards and Practices Board; ISA; 67 Alexander Drive; P. O. Box 12277;
+Research Triangle Park, NC 27709; Telephone (919) 549-8411; Fax (919) 549-8288; E-mail:
+standards@isa.org.
+
+The ISA Standards and Practices Department is aware of the growing need for attention to the
+metric system of units in general, and the International System of Units (SI) in particular, in the
+preparation of instrumentation standards, recommended practices, and technical reports. The
+Department is further aware of the benefits to USA users of ISA standards of incorporating
+suitable references to the SI (and the metric system) in their business and professional dealings
+with other countries. Toward this end, this Department will endeavor to introduce SI-acceptable
+metric units in all new and revised standards to the greatest extent possible. The Metric Practice
+Guide, which has been published by the Institute of Electrical and Electronics Engineers as
+ANSI/IEEE Std. 268-1992, and future revisions, will be the reference guide for definitions,
+symbols, abbreviations, and conversion factors.
+
+It is the policy of ISA to encourage and welcome the participation of all concerned individuals and
+interests in the development of ISA standards, recommended practices, and technical reports.
+Participation in the ISA standards-making process by an individual in no way constitutes
+endorsement by the employer of that individual, of ISA, or of any of the standards, recommended
+practices, and technical reports that ISA develops.
+
+The following served as members of ISA Committee SP88, Batch Control Systems:
+
+NAME                               COMPANY
+
+L. Craig, Chairman                 Rohm and Haas Company
+H. Reed Wiegle, Managing Director  Canus Corporation
+*R. Mergen, Past Chairman          The Lubrizol Corporation
+*T. Fisher, Past Chairman          The Lubrizol Corporation
+*M. Albano                         Honeywell, Inc.
+*J. Barrault                       Siemens
+R. Baxter                          Eastman Kodak Company
+*D. Brandl                         Square D Company
+B. Braunstein                      Exxon Chemical Company
+*E. Bristol                        The Foxboro Company
+R. Bullotta                        WonderWare
+*H. Burns                          Fisher·Controls International, Inc.
+
+G. Carlo-Stella                    Batch Systems International
+R. Caro                            Arthur D. Little Inc.
+B. Casey                           Groupe Schneider
+D. Chappell                        Procter & Gamble Company
+*L. Charpentier                    GSE Process Automation
+
+*One vote per company
+
+ISA-TR88.0.03-1996                                                      3
+*T. Crowl               Moore Products Company
+K. Dittmer              PPG Industries
+*S. Duff                Moore Products Company
+C. Eaves                Intellution, Inc.
+*D. Edwards             Johnson Yokogawa
+M. Eibl                 Bayer AG
+*D. Emerson             GSE Process Automation
+*L. Falkenau            DuPont Engineering
+D. Favetta              Controlomatics Corporation
+*H. Fittler             Honeywell AG
+D. Fleming              Dow Chemical Company
+A. Ghosh                The Foxboro Company
+R. Gil                  Aspen Tech
+B. Goldberg             Goldberg Computer Systems Inc.
+D. Habberjam            Ferranti Syseca Ltd.
+A. Habib                Consultant
+*R. Hall                PID, Inc.
+J. Halliday             Eurotherm Process Automation Ltd.
+*W. Hawkins             Fisher·Rosemount
+N. Haxthausen           Automation & Control Technologies
+*C. Hertz               Bailey Controls Company
+*B. Jensen              Johnson Yokogawa
+*T. Jonsson             ABB Automation AB
+F. Kersting             BASF AG
+R. Klapwijk             Unilever
+*B. Korkmaz             Foxboro Company
+D. Kraska               Geon Company
+L. Krick                Ashland Chemical Company
+L. LeBlanc              Wonderware
+*D. Leach               Air Products & Chemicals Company
+B. Lightle              Allen-Bradley Company
+S. Macchietto           Imperial College for Science Techology &
+Medicine
+*D. Macias              Fisher·Rosemount
+S. Mallaband            Bass Brewers, Ltd.
+W. McFarlane            Valmet Automation, Inc.
+T. Mroz                 DuPont Bailey Initiative
+*T. Müller-Heinzerling  Siemens AUT 38V5
+L. Natiello             Kraft General Foods
+P. Nelson               DOW Corning
+L. Noble                Elsag Bailey Process Automation
+*P. Nowicki             ABB Process Automation, Inc.
+J. Owen                 Eli Lilly & Co.
+A. Pampel               A. F. Pampel Consulting
+*A. Pawlus              Honeywell, Inc.
+S. Petko-Bunney         ICST
+V. Pillai               Pharmacia & Upjohn Inc.
+*S. Prichard            Fisher·Rosemount
+*T. Province            Eastman Chemical Company
+
+*One vote per company                                        ISA-TR88.0.03-1996
+
+4
+R. Reba                  Hoffman-LaRoche
+B. Richards              Hilco Tech
+H. Sakamoto              Yokogawa Electric Corporation
+*M. Saucier              PID Inc.
+A. Schumann, Dr.         Hoechst AG
+E. Smith                 Good Manufacturing Practices, Inc.
+K. Snyder                Pfizer Inc.
+*K. Spencer              ABB Industrial Systems
+D. Sweeney               Digital Interface Systems
+*B. Sykes                Johnson Yokogawa
+A. Tappert               All Control Systems
+T. Tom                   Fischer & Porter Company
+J. Unger                 Chesebrough Pond's (Unilever)
+*N. Vroom                Honeywell, Inc.
+*M. Warburton            ABB Process Automation, Inc.
+R. Watson                Mettler-Toledo, Inc.
+*A. Webster              DuPont
+*A. Weidenbach           Eastman Chemical Company
+*G. Wilcox               Air Products & Chemicals Company
+R. Wilhelm               Objective Control
+*C. Williams             Eastman Kodak Company
+*W. Winslade             Moore Products Company
+R. Winslow               Sterling Diagnostic Imaging
+V. Young                 Hardy Instruments
+
+This Technical Report was approved for publication by the ISA Standards and Practices Board on
+December 20, 1996.
+
+NAME                     COMPANY
+
+R. Webb, Vice President  Pacific Gas & Electric Company
+H. Baumann               H. D. Baumann Inc.
+D. Bishop                Chevron USA Production Company
+P. Brett                 Honeywell Industrial Automation & Controls
+W. Calder III            Factory Mutual Research Corporation
+M. Cohen                 Flexonics, Inc.
+H. Dammeyer              Phoenix Industries, Inc.
+R. Dieck                 Pratt & Whitney
+W. Holland               Southern Company Services Inc.
+H.S. Hopkins             Utility Products of Arizona
+A. Iverson               Ivy Optics
+K. Lindner               Endress + Hauser GmbH + Company
+V. Maggioli              Feltronics Corp.
+T. McAvinew              Rapley Engineering Services
+A. McCauley, Jr.         Chagrin Valley Controls, Inc.
+G. McFarland             Honeywell Industrial Automation & Controls
+E. Montgomery            Fluor Daniel, Inc.
+D. Rapley                Rapley Engineering Services
+
+*One vote per company
+
+ISA-TR88.0.03-1996                                           5
+R. Reimer     Rockwell Automation AB
+J. Rennie     Factory Mutual Research Corporation
+W. Weidman    Consultant
+J. Weiss      Electric Power Research Institute
+J. Whetstone  National Institute of Standards & Technology
+M. Widmeyer   Carnegie Mellon University
+H. Wiegle     Canus Corporation
+C. Williams   Eastman Kodak Company
+G. Wood       Graeme Wood Consulting
+M. Zielinski  Fisher·Rosemount
+
+6             ISA-TR88.0.03-1996
+Foreword
+
+The IEC (International Electrotechnical Commission) SC65A/WG11 and ISA SP88 batch stan-
+dards groups have defined the required functionality for recipes used in the automation of batch
+processing plants. Those standards groups, however, have not yet defined a format or graphical
+representation for those recipes. It is neither possible nor appropriate to predict exactly what the
+committees will recommend, but it is useful to begin consideration of options that will undoubt-
+edly be reviewed.
+
+This document gives examples of possible formats for recipes as they have been defined in part
+1 of the IEC SC65A/WG11 (IEC 65A/186) and ISA SP88 (ANSI/ISA-S88.01-1995) standards.
+This document uses terminology and models defined in ANSI/ISA-S88.01-1995, Batch Control
+Part 1: Models and Terminology, but it does not presume work to be done in the area of data
+modeling, language description, or any other work that is included in part 2 of the IEC/ISA stan-
+dard. It is the intent of this document to illustrate by example rather than to propose specific
+implementation options or to indicate preference for specific solutions. The following recipe pro-
+cedure presentation formats are discussed in this document: list, sequential function chart, and
+modified Gantt chart.
+
+Abstract
+
+This Technical Report gives examples of possible formats, such as textual list, sequential func-
+tion chart, and modified Gantt chart, for recipe procedures as they have been defined in ANSI/
+ISA-S88.01-1995 and IEC 65A/186/CDV, Batch Control Part 1: Models and Terminology.
+
+Key words
+
+list format, modified Gantt chart format, operation procedure, recipe presentation format, recipe
+procedure, sequential function chart format, unit procedure
+
+ISA-TR88.0.03-1996  7
+Contents
+
+1 Scope ........................................................................................................................ 11
+2 Purpose..................................................................................................................... 11
+3 Multiple use requirements ...................................................................................... 11
+4 Hierarchical requirements....................................................................................... 11
+5 Recipe presentation formats at the operation and unit procedure levels .......... 12
+
+                  5.1 List format........................................................................................... 12
+                  5.2 Sequential function chart (SFC) format .............................................. 13
+6 Recipe presentation formats at the procedure level ............................................ 14
+                  6.1 List format........................................................................................... 14
+                  6.2 Modified Gantt chart at the procedure level ....................................... 15
+7 Summary .................................................................................................................. 17
+Annex A -- References ............................................................................................... 19
+
+Figures
+
+1 -- List format for phases in a tabular form .................................................................. 13
+2 -- Phases in a sequential function chart format ......................................................... 14
+3 -- List format of unit procedures in a tabular form ...................................................... 15
+4 -- Modified Gantt chart of unit procedures -- horizontal orientation .......................... 16
+5 -- Modified Gantt chart of unit procedures -- vertical orientation .............................. 17
+
+ISA-TR88.0.03-1996  9
+1 Scope
+
+ISA-TR88.0.03 defines a format or graphical representation for recipes used in the automation of
+batch processing plants as defined in part one of the IEC SC65A / ISA SP88 standard. (See
+Annex A -- References.) The following are possible recipe procedure presentation formats dis-
+cussed in this document:
+
+a)                  List
+
+b)                  Sequential function chart (SFC)
+
+c)                  Modified Gantt chart -- horizontal orientation
+
+d)                  Modified Gantt chart -- vertical orientation
+
+2 Purpose
+
+It is the intent of this Technical Report to illustrate by example (rather than to propose specific
+implementation options or indicate preference for specific solutions) possible formats for recipe
+procedures as they have been defined in ANSI/ISA-S88.01-1995 and IEC 65A/186/CDV, Batch
+Control Part 1: Models and Terminology.
+
+3 Multiple use requirements
+
+However depicted, recipe information is not confined to a single use. The recipe depictions dis-
+cussed in this document may be used for the following purposes:
+
+                 a) In the specification of general, site, and master recipes, including the specifica-
+                      tion of library recipe procedural elements
+
+                 b) For the use of recipe information in scheduling
+                 c) For the control recipe in the operating environment -- which may include display
+
+                      of current batch status
+                 d) For batch history -- as may be applicable for reporting and referencing batch
+
+                      information.
+
+4 Hierarchical requirements
+
+The primary challenge in choosing a recipe presentation format is crisp depiction of the proce-
+dure. All other categories of recipe information can be related to the procedure or to the overall
+recipe. The procedure, on the other hand, must clearly portray sequencing of procedural ele-
+
+ISA-TR88.0.03-1996                                                  11
+ments (such as phases or operations) in such a way that the sequence, as well as other relation-
+ships of procedural elements, to each other is clearly defined.
+
+A recipe presentation format must also deal with the various levels in the procedural element
+hierarchy. Recipes do not depict elements below the level of the phase. Operations, however,
+are an ordered set of phases that may be detailed in the recipe. It must be possible, therefore, to
+define an operation in the recipe procedure. The definition must contain both the phase identities
+and the ordering logic that specifies the order in which they are to be executed.
+
+The next higher level procedural element is the unit procedure. Because no more than one oper-
+ation is presumed to be active at a given time in a single unit, a unit procedure can usually be
+represented as a simple sequence of operations, one following the other.
+
+The highest level procedural element is the recipe procedure itself. It consists of all required unit
+procedures along with information that defines the order in which they may be initiated.
+
+Because of the differences in functionality from one level to the next, the ideal recipe presentation
+format for portraying a recipe procedure may vary from level to level.
+
+5 Recipe presentation formats at the operation and unit procedure
+       levels
+
+Operations are made up of phases that may run concurrently and have either complex or prod-
+uct-specific interrelationships, or both. A list format is possible for simple (serial) cases, while a
+method that allows depiction of a range of sequential relationships, such as a sequential function
+chart format, is useful in more intricate (concurrent) cases.
+
+Unit procedures are made up of operations that are usually executed sequentially. Therefore,
+either the list format or sequential function charts may be used to represent the operations in a
+unit procedure.
+
+5.1 List format
+
+A simple way of representing a linear sequence is a list. A list has the advantage of being easy to
+visualize and unmistakably precise. However, a list is useful only in simple situations because
+parallelism and complex sequences are very difficult to depict clearly in this format. In spite of
+difficulties with the list format when dealing with complex processes, this format is adequate
+when the recipe procedure is simple or has been simplified by engineering effort.
+
+The list format for an operation specifies what phases are to be executed and in which sequence.
+The list of phases may be displayed in a tabular form where the phases are listed together with
+associated key information, including some or all parameters. (See Figure 1.) The same type of
+representation can be used for the operations in a unit procedure.
+
+The list format is most often used to display a linear sequence of phases or a linear sequence of
+
+12  ISA-TR88.0.03-1996
+operations. Through parameter control of the phases or operations, a limited amount of concur-
+rence may be described, such as a parameter indicating heating with or without agitation.
+
+                                         Phase parameters
+
+                    ID  Phase
+
+                                  Ingredient Set point     Other
+                                                        parameters
+
+                    1   Fill      Water  1000 kg
+
+                    2   Add       Salt   50 kg
+
+                        manually
+
+                    3   Heat      Steam  50°C
+
+                    4   Add       Sugar  30 kg
+
+                        manually
+
+                         Figure 1 -- List format for phases in a tabular form
+
+5.2 Sequential function chart (SFC) format
+
+More complex recipe sequences require a recipe presentation format that can clearly depict a
+variety of ordering logic. One accepted methodology is the function chart that is defined in IEC
+848, Preparation of Function Chart for Control Systems. (See Annex A -- References.) This
+presentation format, commonly known as sequential function chart (SFC), has the following
+advantages:
+
+                 a) Quite flexible
+                 b) Broadly understood
+                 c) Well documented
+
+If a 1:1 relationship is imposed between a step in the SFC and a recipe phase, the recipe creator
+and other recipe users have an overview of the phases involved and their interaction. During
+execution, such a depiction can be used to give the operator an overview of the current status of
+the operation.
+
+A simplified SFC may also be developed in which the actual activation of the equipment phase
+and the transfer of parameters are implicit (i.e., the format in Figure 2 without the more rigorous
+expansion shown in the inset). Display techniques may be applied to give access to additional
+information such as associated formula and other information.
+
+ISA-TR88.0.03-1996                                                  13
+                  Figure 2 -- Phases in a sequential function chart format
+
+6 Recipe presentation formats at the procedure level
+
+The recipe procedure consists of recipe unit procedures that may run in parallel. Each unit pro-
+cedure is presumed to be a linear sequence of operations, some of which interact with operations
+in other unit procedures. In situations where the interaction between parallel unit procedures is
+limited or not important, either a list format or a sequential function chart is adequate. Without
+extensions, these formats do not lend themselves to easy visualization of relationships between
+concurrent unit procedures.
+
+A pure Gantt chart cannot be used because a recipe does not contain scheduling information. A
+modified Gantt chart may be used at this level to allow relationships between asynchronous pro-
+cedural elements to be shown graphically and to illustrate the sequence and relative relationships
+without adding an actual time dimension.
+
+6.1 List format
+
+A list format specifies what unit procedures are contained or referenced and the sequence in
+which they are to be activated. The list format of unit procedures may be displayed in a tabular
+form with the unit procedure IDs listed together with associated key information. (See Figure 3.)
+
+14  ISA-TR88.0.03-1996
+     ID             Unit procedure  (Reference to) other recipe
+                                              information
+  React 1              Reaction
+Filtration 1            Filtration
+                       Reaction
+  React 2             Separation
+Separation
+
+Figure 3 -- List format of unit procedures in a tabular form
+
+Concurrency cannot be easily expressed in the list format. As soon as multiple unit procedures
+and/or multiple units with material transfers are involved, some concurrence becomes inevitable.
+In this case, a more sophisticated representation should be considered. However, the execution
+of two consecutive unit procedures on the same unit should not be cause for abandoning the sim-
+ple list format. In especially simple cases, it may be unnecessary to embed even concurrent
+sequences in the recipe (e.g., because transfers are handled by unit-specific equipment control,
+and scheduling is not important). In such cases, a simple list format may still be usable.
+
+6.2 Modified Gantt chart at the procedure level
+
+Unit procedures are largely asynchronous, and this presents many problems in representing the
+permissible order of initiation of each unit procedure and the relationships that exist between
+them. Asynchronous unit procedures result in lower level operations and phases that interact
+with operations and phases in other unit procedures. If these sequencing and relationship issues
+are to be easily visualized in a recipe, some method must be added to SFC depiction to clearly
+show both the permissible initiation sequence of unit procedures and the relationship between
+asynchronous but related unit procedures.
+
+A scheduling activity may need more information, such as estimated execution times of unit pro-
+cedures, points of transfer or other interaction between operations in unit procedures, or the time
+limitations on such activities as transfers. In some cases, there may be the need for synchroniza-
+tion in the middle of a unit procedure (e.g., if a reaction in unit A can take place only after B has
+reached a certain operation).
+
+Note that not all of the information mentioned above can come from a recipe, because recipes
+may not contain information about real-time events such as actual execution times, paths actually
+chosen, and other complications. The form of the recipe, however, can be similar enough to a
+traditional Gantt chart to allow external information to be easily integrated for scheduling and
+other functions. In the absence of actual execution times, for example, relative time lengths can
+be used for each operation.
+
+A proposed recipe presentation format for displaying this type of complexity at the procedure
+level would be a modified Gantt chart. (See Figure 4, horizontal orientation.) The dashed lines
+with arrows indicate synchronization between the unit procedures.
+
+ISA-TR88.0.03-1996                                               15
+               Unit Procedure A
+
+               Unit Procedure B
+
+               Unit Procedure C
+
+               Unit Procedure D
+
+        Figure 4 -- Modified Gantt chart of unit procedures -- horizontal orientation
+
+The classic Gantt chart depiction is horizontal rather than the vertical format usually seen in
+tables or SFC types of sequence descriptions. A useful modified Gantt chart depiction can also
+be constructed in a vertical layout. While not traditional, many of the advantages of a traditional
+Gantt chart form are still available while making the methodology easier to merge with other ver-
+tically oriented sequence depictions. An example of such a vertical Gantt chart format is shown
+in Figure 5.
+
+Either type of modified Gantt chart (i.e., horizontal or vertical orientation) can be expanded to
+take the specific relationships between operations into account or to use the boundaries between
+operations or phases to synchronize the initiation of unit procedures. (See Figure 5.) It may also
+be necessary to include additional specifications of recipe dependent synchronization and/or
+rules governing the execution.
+
+The actual timing will be calculated in the Production Planning and Scheduling activity based on
+the interrelationships indicated in the master recipe, other recipe and production plan information
+(e.g., required materials and amounts), and separate historical or calculated data regarding exe-
+cution times for phases, operations, and unit procedures. Augmentation of the modified Gantt
+chart with additional data from Production Information Management and Production Planning
+and Scheduling may then be used to indicate the actual execution of the control recipe. In effect,
+the combination of the modified Gantt chart recipe information with other information allows the
+construction of an actual Gantt chart illustrating actual execution and timing.
+
+16  ISA-TR88.0.03-1996
+                     Unit       Unit                        Unit      Unit
+                 Procedure  Procedure                  Procedure  Procedure
+
+                       A          B                          C         D
+
+Operation A1                           Operation C1
+
+Operation A2                           Operation C2
+
+Operation A3
+
+                                       Operation C3
+
+Operation A4
+
+Operation A5
+
+Operation A6
+
+Figure 5 -- Modified Gantt chart of unit procedures -- vertical orientation
+
+7 Summary
+
+Each of the three recipe procedure presentation formats discussed in this document have their
+own set of advantages and disadvantages. The textual list format is simple, but it does not give
+timing nor conditional logic information. The modified Gantt chart displays timing information and
+some conditional logic, but it cannot display complex phase relationships. The sequential
+function chart provides complex conditional logic presentation, but it does not allow the user to
+easily visualize the relationships between unit procedures.
+
+As stated earlier, the purpose of this Technical Report is not to declare the preferred or superior
+recipe procedure presentation formats. Its purpose is to provide further discussion regarding
+recipe procedure presentation formats. Hopefully, this document will initiate further discussion
+that will be input to Part 2 of ANSI/ISA-S88.01, Batch Control Part 1: Models and Terminology.
+
+ISA-TR88.0.03-1996                                                           17
+Annex A -- References
+
+INTERNATIONAL ELECTROTECHNICAL COMMISSION (IEC)
+
+     IEC 848: 1988         Preparation of Function Charts for Control Sysrems
+
+     IEC 65A/186/CDV       Batch Control Part 1: Models and Terminology
+
+     Available from:       ANSI
+                           11 West 42nd Street
+                           New York, NY 10036                Tel: (212) 642-4900
+
+ISA
+
+     ANSI/ISA-S88.01-1995  Batch Control Part 1: Models and Terminology
+
+     Available from:       ISA
+                           67 Alexander Drive
+                           PO Box 12277                      Tel: (919) 549-8411
+                           Research Triangle Park, NC 27709
+
+ISA-TR88.0.03-1996                                                             19
+Developing and promulgating technically sound consensus standards,
+recommended practices, and technical reports is one of ISA's primary
+goals. To achieve this goal the Standards and Practices Department
+relies on the technical expertise and efforts of volunteer committee
+members, chairmen, and reviewers.
+ISA is an American National Standards Institute (ANSI) accredited
+organization. ISA administers United States Technical Advisory
+Groups (USTAGs) and provides secretariat support for International
+Electrotechnical Commission (IEC) and International Organization for
+Standardization (ISO) committees that develop process measurement
+and control standards. To obtain additional information on the
+Society's standards program, please write:
+
+                              ISA
+                              Attn: Standards Department
+                              67 Alexander Drive
+                              P.O. Box 12277
+                              Research Triangle Park, NC 27709
+
+                                                                                      ISBN: 1-55617-622-8
+
