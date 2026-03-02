@@ -1,13 +1,13 @@
 ---
 name: isa-95
-description: "ISA-95 (ANSI/ISA-95.00.01) enterprise-control system integration standard reference for the Fuuz platform. Use when requests mention \"ISA-95\", \"ISA 95\", \"S95\", \"IEC 62264\", \"enterprise-control integration\", \"equipment hierarchy\", \"role-based equipment\", \"physical asset model\", \"functional hierarchy\", \"Level 0-4\", \"manufacturing operations management\", \"MOM\", \"MO&C\", \"work center\", \"work unit\", \"process segment\", \"product segment\", \"production capability\", or when designing asset hierarchies, UNS topic structures, work order models, or OEE systems aligned with ISA-95 on Fuuz."
+description: "ISA-95 (ANSI/ISA-95.00.01-05) enterprise-control system integration standard reference for the Fuuz platform. Use when requests mention \"ISA-95\", \"ISA 95\", \"S95\", \"IEC 62264\", \"enterprise-control integration\", \"equipment hierarchy\", \"role-based equipment\", \"physical asset model\", \"functional hierarchy\", \"Level 0-4\", \"manufacturing operations management\", \"MOM\", \"MO&C\", \"work center\", \"work unit\", \"process segment\", \"product segment\", \"production capability\", \"object model\", \"personnel model\", \"material model\", \"process segment\", \"operations definition\", \"operations schedule\", \"operations performance\", \"operations capability\", \"work master\", \"work directive\", \"job order\", \"job response\", \"work calendar\", \"work alert\", \"B2MML\", \"transaction model\", \"PUSH\", \"PULL\", \"PUBLISH\", or when designing asset hierarchies, UNS topic structures, work order models, or OEE systems aligned with ISA-95 on Fuuz."
 ---
 
 # ISA-95 Reference for Fuuz Development
 
-**Version 1.0** | Last Updated: 2026-03-02
+**Version 2.0** | Last Updated: 2026-03-02
 
-ISA-95 (ANSI/ISA-95.00.01-2025 / IEC 62264-1) defines standard models and terminology for integrating enterprise business systems with manufacturing operations and control systems. It establishes the boundary between Level 4 (business planning and logistics) and Level 3 (manufacturing operations management), providing hierarchy models, functional models, and information models that form the foundation for MES/MOM implementations.
+ISA-95 (ANSI/ISA-95.00.01-05 / IEC 62264) defines standard models and terminology for integrating enterprise business systems with manufacturing operations and control systems. It establishes the boundary between Level 4 (business planning and logistics) and Level 3 (manufacturing operations management), providing hierarchy models, functional models, information models, activity models, detailed operations management objects, and transaction patterns that form the foundation for MES/MOM implementations.
 
 ## When to Use This Skill
 
@@ -18,12 +18,40 @@ Use **isa-95** when you need to:
 - Structure UNS topics according to ISA-95 hierarchy
 - Model manufacturing operations data (production, maintenance, quality, inventory)
 - Define information flows between enterprise (ERP) and control (MES/Fuuz) systems
+- Design object models for personnel, equipment, materials, or process segments (Part 2)
+- Implement the 8-activity pattern for any MOM category (Part 3)
+- Model work definitions, job orders, job responses, or work calendars (Part 4)
+- Design ERP/MES integration transactions using PULL, PUSH, or PUBLISH patterns (Part 5)
 
 **This is a standards reference skill.** For building the actual implementations, use the corresponding builder skills (fuuz-schema, fuuz-flows, fuuz-screens, fuuz-industrial-ops).
 
 ---
 
-## Equipment Hierarchy — The Core of ISA-95
+## ISA-95 Parts Overview
+
+ISA-95 is a multi-part standard. This skill covers Parts 1 through 5. Part 1 content is included directly in this file (the foundation). Parts 2-5 are in separate reference files for detailed guidance.
+
+| Part | Title | Scope | Reference File |
+|------|-------|-------|----------------|
+| **Part 1** | Models and Terminology | Equipment hierarchy, functional levels (0-4), MOM categories, Level 3/4 boundary definition | This file (SKILL.md) |
+| **Part 2** | Object Model Attributes | Personnel, equipment, physical asset, material, process segment, operations definition/schedule/performance/capability models | [references/02-object-models.md](references/02-object-models.md) |
+| **Part 3** | Activity Models of MOM | Generic 8-activity model, production/maintenance/quality/inventory operations activities, cross-category interactions, scheduling concepts | [references/03-activity-models.md](references/03-activity-models.md) |
+| **Part 4** | Objects and Attributes for MOM Integration | Business vs work view, work master/directive, job order state machine, work schedule/performance/capability, work alerts, work calendars, KPIs | [references/04-operations-management.md](references/04-operations-management.md) |
+| **Part 5** | B2M Transactions | PULL/PUSH/PUBLISH transaction models, 13 standard verbs, nouns, verb-noun action matrix, transaction profiles, B2MML | [references/05-transaction-models.md](references/05-transaction-models.md) |
+
+### Quick Reference: When to Use Which Part
+
+| If you are working on... | Start with... |
+|--------------------------|---------------|
+| Asset hierarchy, functional levels, MOM categories | Part 1 (this file) |
+| Data model design for personnel, equipment, materials, or processes | Part 2 (object models) |
+| Implementing MOM activities (scheduling, dispatching, data collection, tracking) | Part 3 (activity models) |
+| Job order lifecycle, work definitions, state machines, calendars, KPIs | Part 4 (operations management) |
+| ERP integration, API design, messaging patterns | Part 5 (transaction models) |
+
+---
+
+## Part 1: Equipment Hierarchy — The Core of ISA-95
 
 ### Role-Based Equipment Hierarchy
 
@@ -210,4 +238,5 @@ Quality Standards ─────────────>  Quality Testing     
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-03-02 | Added Parts 2-5 reference files: object models, activity models, operations management, transaction models. Updated trigger words, added parts overview table and quick reference guide. |
 | 1.0 | 2026-03-02 | Initial release -- equipment hierarchy, functional levels, MOM categories, Fuuz mapping, information models, cross-references |

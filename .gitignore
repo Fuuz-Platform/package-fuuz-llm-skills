@@ -1,3 +1,15 @@
+# Proprietary RFP/RFI skills and source documents (not for public repo)
+fuuz-rfp-rfi/
+fuuz-rfp-functional/
+fuuz-rfp-security/
+fuuz-rfp-functional.skill
+fuuz-rfp-security.skill
+fuuz-rfp-skill.skill
+Fuuz RFP Skill Readme.md
+
+# Build artifacts (generated from source directories)
+*.skill
+
 # Staging area for new training data (processed files get moved to skill references)
 NewTrainingData/
 
